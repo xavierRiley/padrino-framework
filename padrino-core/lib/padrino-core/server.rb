@@ -65,7 +65,12 @@ module Padrino
           app, opts = Rack::Builder.parse_file(self.options[:config], opt_parser)
         else
           say "Configuration #{options[:config]} not found! Racking up default Padrino application", "33;1", "!!"
-          require "config/boot" and app = Padrino.application
+          begin 
+            require "config/boot" 
+          rescue LoadError
+            # nothing to do... it's allowed to ommit config/boot file...
+          end
+          app = Padrino.application
         end
         options.merge!(opts) if opts
         app
