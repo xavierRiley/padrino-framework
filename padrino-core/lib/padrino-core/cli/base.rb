@@ -1,4 +1,5 @@
 require 'thor'
+require 'padrino-core'
 
 module Padrino
   module Cli
@@ -12,21 +13,22 @@ module Padrino
       class_option :help, :type => :boolean, :desc => "Show help usage"
 
       desc "start", "Starts the Padrino application"
-      method_option :adapter,     :type => :string,  :aliases => "-a", :desc => "Rack Handler (default: autodetect)"
+      method_option :server,      :type => :string,  :aliases => "-s", :desc => "Rack Handler (default: autodetect)"
       method_option :host,        :type => :string,  :aliases => "-h", :required => true, :default => "localhost", :desc => "Bind to HOST address"
       method_option :port,        :type => :numeric, :aliases => "-p", :required => true, :default => 3000, :desc => "Use PORT"
       method_option :daemonize,   :type => :boolean, :aliases => "-d", :desc => "Run daemonized in the background"
       def start
         prepare :start
-        require File.expand_path(File.dirname(__FILE__) + "/adapter")
-        require File.expand_path('config/boot.rb')
-        Padrino::Cli::Adapter.start(options)
+        require "padrino-core/server"
+        ARGV.shift
+        Padrino.run!(options.dup.symbolize_keys)
       end
 
       desc "stop", "Stops the Padrino application"
       def stop
-        require File.expand_path(File.dirname(__FILE__) + "/adapter")
-        Padrino::Cli::Adapter.stop
+        # XXX: stop is not working for a while
+        #require File.expand_path(File.dirname(__FILE__) + "/adapter")
+        #Padrino::Cli::Adapter.stop
       end
 
       desc "rake", "Execute rake tasks"

@@ -6,7 +6,8 @@ FileSet.glob_require('padrino-core/*.rb', __FILE__)
 
 # Defines our Constants
 PADRINO_ENV  = ENV["PADRINO_ENV"]  ||= ENV["RACK_ENV"] ||= "development"  unless defined?(PADRINO_ENV)
-PADRINO_ROOT = ENV["PADRINO_ROOT"] ||= File.dirname(Padrino.first_caller) unless defined?(PADRINO_ROOT)
+#XXX: doesn't work
+#PADRINO_ROOT = ENV["PADRINO_ROOT"] ||= File.dirname(Padrino.first_caller) unless defined?(PADRINO_ROOT)
 
 module Padrino
   class ApplicationLoadError < RuntimeError #:nodoc:

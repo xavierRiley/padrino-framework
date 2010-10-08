@@ -15,7 +15,7 @@ module Rack::Handler
   end
 
   register 'mock', 'Rack::Handler::Mock'
-  Padrino::Server::Handlers << 'mock'
+  Padrino::Server::SUPPORTED_HANDLERS << 'mock'
 end
 
 class ServerApp < Padrino::Application; end
@@ -26,12 +26,16 @@ class ServerTest < Test::Unit::TestCase
   end
 
   context 'for server functionality' do
+    should "is racking up config.ru properly" do
+      # XXX: For now no idea how to test it
+    end
+  
     should "locates the appropriate Rack handler and calls ::run" do
-      silence_logger { Padrino.run!(:host => 'foo.local', :port => 9001, :adapter => 'mock') }
+      silence_logger { Padrino.run!(:Host => 'foo.local', :Port => 9001, :server => 'mock') }
     end
 
     should "falls back on the next server handler when not found" do
-      assert_raise(Padrino::Server::LoadError) { silence_logger {Padrino.run!(:host => 'foo.local', :port => 9001, :adapter => 'foo') } }
+      assert_raise(LoadError) { silence_logger { Padrino.run!(:host => 'foo.local', :port => 9001, :adapter => 'foo') } }
     end
   end
 end
