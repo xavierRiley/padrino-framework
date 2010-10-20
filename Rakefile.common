@@ -24,4 +24,13 @@ Rcov::RcovTask.new do |rcov|
   rcov.rcov_opts = %w[--exclude 'test,^/usr/lib,^/usr/local/lib,^/var' --text-report]
 end
 
+require 'ruby-prof/task'
+RubyProf::ProfileTask.new do |t|
+  t.test_files = FileList['test/**/riot_*.rb']
+  t.output_dir = "profile"
+  t.printer = :graph
+  t.min_percent = 10
+end
+
 task :default => :rcov
+
