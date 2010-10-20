@@ -56,27 +56,12 @@ module Padrino
     end
   
     ##
-    # Returns racked application.
+    # Returns racked up application.
     #
     def app
-      @app ||= begin
-        if File.exist?(options[:config])
-          say "Racking up configuration from #{options[:config]}", "32;1"
-          app, opts = Rack::Builder.parse_file(self.options[:config], opt_parser)
-        else
-          say "Configuration #{options[:config]} not found! Racking up default Padrino application", "33;1", "!!"
-          begin 
-            require "config/boot" 
-          rescue LoadError
-            # nothing to do... it's allowed to ommit config/boot file...
-          end
-          app = Padrino.application
-        end
-        options.merge!(opts) if opts
-        app
-      end
+      @app ||= File.exist?(options[:config]) ? rackup_config_file : rackup_padrino_app
     end
-  
+    
     ##
     # It is racking up Padrino application! This method should never be called 
     # directly. It's used only by Rack::Server via <tt>Rack::Server#start</tt>
@@ -117,8 +102,14 @@ module Padrino
     end
     
     ##
-    # Default options for Padrino application. 
+    # It displays eye-candy, colorized messages. Kids will love it xD.  
     #
+    def say(text, color="30;1", prefix="**")
+      puts "\e[#{color}m#{prefix}\e[0m #{text}"
+    end
+    
+    private
+    
     def default_options
       super.merge(
         :config    => "config.ru",
@@ -128,9 +119,6 @@ module Padrino
       )
     end
 
-    ##
-    # It registers traps for INT and TERM signals while server is running. 
-    #
     def register_signal_traps
       [:INT, :TERM].each do
         trap(:INT) do 
@@ -140,9 +128,6 @@ module Padrino
       end
     end
     
-    ##
-    # It starts debug mode when <tt>:debug</tt> option is set. 
-    #
     def enable_debug
       $DEBUG = true
       require 'pp'
@@ -151,11 +136,20 @@ module Padrino
       pp app
     end
     
-    ##
-    # It displays eye-candy, colorized messages. Kids will love it xD.  
-    #
-    def say(text, color="30;1", prefix="**")
-      puts "\e[#{color}m#{prefix}\e[0m #{text}"
+    def rackup_config_file
+      say "Racking up configuration from #{options[:config]}", "32;1"
+      app, opts = Rack::Builder.parse_file(self.options[:config], opt_parser)
+      options.merge!(opts)
+      app
+    end
+    
+    def rackup_padrino_app
+      say "Racking up default Padrino application", "32;1"
+      require "config/boot" rescue LoadError
+    rescue LoadError
+      # nothing to do... it's allowed to ommit config/boot file...
+    ensure
+      Padrino.application
     end
     
   end # Server
