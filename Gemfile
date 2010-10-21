@@ -23,12 +23,12 @@ group :development do
   gem "fakeweb",  ">=1.2.8"
   gem "webrat", ">= 0.5.1"
   gem "haml", ">= 2.2.22"
-  gem "shoulda", ">= 2.10.3"
+  gem "rspec", ">= 2.0"
   gem "redis", ">= 2.0.0"
   gem "uuid", ">= 2.3.1"
   platforms :mri_18 do
     gem "rcov", "0.9.8"
-    gem "ruby-prof", ">= 0.9.1"
+    gem "ruby-prof", ">= 0.9.2"
     gem "system_timer", ">= 1.0"
   end
   platforms :mri do
