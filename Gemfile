@@ -24,6 +24,7 @@ group :development do
   gem "webrat", ">= 0.5.1"
   gem "haml", ">= 2.2.22"
   gem "rspec", ">= 2.0"
+  gem "rspec-instafail"
   gem "redis", ">= 2.0.0"
   gem "uuid", ">= 2.3.1"
   platforms :mri_18 do

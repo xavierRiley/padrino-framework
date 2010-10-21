@@ -97,8 +97,8 @@ describe "Padrino's test helpers" do
   context "for Runtime" do
     it "#with_no_argv should execute given block with empty ARGV" do
       argv = []
-      without_argv { argv = $ARGV }
-      argv.should == nil
+      without_argv { argv = ARGV }
+      argv.should == []
     end
   end
 end

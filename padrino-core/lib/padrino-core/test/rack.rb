@@ -1,6 +1,7 @@
 module Padrino
   module Test
     module Rack
+    
       def mock_app(&block)
       
       end

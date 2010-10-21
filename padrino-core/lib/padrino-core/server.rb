@@ -45,7 +45,6 @@ module Padrino
     end
     
     def initialize(options={})
-      puts self.options.inspect
       @options = default_options.merge(self.options).merge(options)
       @options[:Port] = @options.delete(:port) if @options[:port]
       @options[:Host] = @options.delete(:host) if @options[:host]
@@ -94,7 +93,7 @@ module Padrino
         handlers, handler = ((s = options[:server]) ? [s] : SUPPORTED_HANDLERS), nil
         handlers.each { |name| break if handler = Rack::Handler.get(name.downcase) rescue nil }
         handler or raise HandlerNotFoundError, "None of following rack handlers found: #{handlers.join(', ')}"
-      end      
+      end
     end
     
     ##
