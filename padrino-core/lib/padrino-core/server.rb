@@ -9,7 +9,7 @@ module Padrino
   #   Padrino.run! 
   # ... will start server at localhost on port 3000 using the first found handler.
   #
-  #   Padrino.run!("localhost", "4000", "mongrel")
+  #   Padrino.run!(:Host => "localhost", :Port => "4000", :server => "mongrel")
   # ... will start server at localhost on port 4000 using mongrel handler.
   # 
   def self.run!(options={})
@@ -23,10 +23,11 @@ module Padrino
   #
   class Server < Rack::Server
     
-    ##
     # Raised when specified server handler has not been found. 
-    #
     class HandlerNotFoundError < ::LoadError; end
+
+    # List of server handlers supported by automaticaly detection.
+    SUPPORTED_HANDLERS = %w[thin mongrel webrick] 
 
     ##
     # Prepares if necessery, and returns middleware stack for all environments.
@@ -43,16 +44,11 @@ module Padrino
       end
     end
     
-    ##
-    # List of server handlers supported by automaticaly detection, 
-    #
-    SUPPORTED_HANDLERS = %w[thin mongrel webrick] 
-  
-    ##
-    # Overriden constructor.
-    #
     def initialize(options={})
+      puts self.options.inspect
       @options = default_options.merge(self.options).merge(options)
+      @options[:Port] = @options.delete(:port) if @options[:port]
+      @options[:Host] = @options.delete(:host) if @options[:host]
     end
   
     ##
@@ -145,7 +141,7 @@ module Padrino
     
     def rackup_padrino_app
       say "Racking up default Padrino application", "32;1"
-      require "config/boot" rescue LoadError
+      load Padrino.root("config/boot.rb") rescue LoadError
     rescue LoadError
       # nothing to do... it's allowed to ommit config/boot file...
     ensure

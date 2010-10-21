@@ -43,38 +43,62 @@ describe "Padrino's test helpers" do
     end
     
     it "#fake_stdin should be able to simulate standard input" do
+      res = []
       fake_stdin("Hello...", "World!") do
-        gets.chomp.should == "Hello..."
-        gets.chomp.should == "World!"
+        res << $stdin.gets.chomp
+        res << $stdin.gets.chomp
       end
+      res.should == ["Hello...", "World!"]
     end
   end
   
   context "for Files" do
-    it "#expand_path should return expanded path to given file" do
-      expand_path(__FILE__, "fixtures/apps").should == File.expand_path(File.dirname(__FILE__), 'fixtures/apps')
+    it "#path_to should return expanded path to given file" do
+      path_to(__FILE__, "fixtures/apps").should == File.expand_path('fixtures/apps', File.dirname(__FILE__))
     end
   
     it "#within_dir should execute block in context of given directory" do
-      within_dir(dirname = expand_path(__FILE__, "fixtures")) do
-        Dir.pwd.should == File.expand_path(dirname)
-      end
+      dirname, res = path_to(__FILE__, "fixtures"), nil
+      within_dir(__FILE__, "fixtures") {|dir| res = dir }
+      res.should == dirname
     end
     
     it "#within_dir should create given directory if it not exists" do
-      dirname = expand_path(__FILE__, "tmp")
-      within_dir(__FILE__, "tmp") do
-        File.should be_directory dirname 
-        Dir.pwd.should == dirname
+      dirname, res = path_to(__FILE__, "tmp"), nil
+      within_dir(__FILE__, "tmp") do |dir| 
+        res = dir 
+        File.should be_directory res
       end
+      res.should == dirname
     end
     
     it "#within_dir should properly remove automaticaly created directory" do
-      dirname = expand_path(__FILE__, "tmp/foo/bar")
-      within_dir(__FILE__, "tmp/foo/bar") do
-        File.should be_directory dirname
-      end
-      File.should_not be_exists dirname
+      dirname, res = path_to(__FILE__, "tmp/foo/bar"), nil
+      within_dir(__FILE__, "tmp/foo/bar") {|dir| res = dir }
+      res.should == dirname
+      File.should_not be_exists res
+    end
+  end
+  
+  context "for Rack" do
+    it "#set_app should set current rack test application" do
+      set_app(test_app = proc {})
+      app.should == test_app
+    end
+    
+    it "#within_app should execute given block in rack application context" do
+      test_app, res = proc {}, nil
+      within_app(test_app) { res = app }
+      res.should == test_app
+      app.should_not == test_app 
+    end
+  end
+  
+  context "for Runtime" do
+    it "#with_no_argv should execute given block with empty ARGV" do
+      argv = []
+      without_argv { argv = $ARGV }
+      argv.should == nil
     end
   end
 end

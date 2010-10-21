@@ -1,4 +1,5 @@
 require 'fileutils'
+require 'pathname'
 
 module Padrino
   module Test
@@ -8,11 +9,11 @@ module Padrino
       #
       # ==== Examples
       # 
-      #   expand_path("/home/nu7hatch", "foo/bar")    # => "/home/nu7hatch/foo/bar"
-      #   expand_path("/home/nu7hatch", "../foo/bar") # => "/home/foo/bar"
+      #   path_to("/home/nu7hatch", "foo/bar")    # => "/home/nu7hatch/foo/bar"
+      #   path_to("/home/nu7hatch", "../foo/bar") # => "/home/foo/bar"
       #
-      def expand_path(root, *parts)
-        File.expand_path(File.dirname(root), *parts)
+      def path_to(root, *parts)
+        File.expand_path(File.join(*parts), File.dirname(root))
       end
       
       ##
@@ -21,22 +22,19 @@ module Padrino
       # ==== Examples
       #
       #   within_dir __FILE__, "tmp/foo" do
-      #     Dir.pwd # => __FILE__ + "/tmp/foo"
+      #     # ... do something here ...
       #   end
       #
       def within_dir(root, *parts)
-        pwd = Dir.pwd
-        dir = expand_path(root, *parts)
+        dir = path_to(root, *parts)
         remove = false
         unless File.exists?(dir)
-          remove = File.join(parts).split("/").first
+          remove = path_to(root, File.join(parts).split("/").first)
           FileUtils.mkdir_p(dir)
         end
-        Dir.chdir(dir)
-        yield
+        yield(dir)
       ensure
         FileUtils.rm_rf(remove) if remove
-        Dir.chdir(pwd)
       end
       
     end # Files

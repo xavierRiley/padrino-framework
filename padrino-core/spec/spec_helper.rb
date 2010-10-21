@@ -14,4 +14,6 @@ RSpec.configure do |conf|
   conf.include Padrino::Test::Meta
   conf.include Padrino::Test::IO
   conf.include Padrino::Test::Files 
+  conf.include Padrino::Test::Rack
+  conf.include Padrino::Test::Runtime
 end

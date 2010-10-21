@@ -28,4 +28,4 @@ RSpec::Core::RakeTask.new(:profile) do |t|
   t.rspec_opts = %q[--colour --backtrace --profile]
 end
 
-task :default => :rcov
+task :default => :spec
