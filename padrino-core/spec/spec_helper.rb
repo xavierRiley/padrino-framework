@@ -12,5 +12,6 @@ RSpec.configure do |conf|
   conf.mock_with :mocha
   conf.include Rack::Test::Methods
   conf.include Padrino::Test::Meta
-  conf.include Padrino::Test::IO 
+  conf.include Padrino::Test::IO
+  conf.include Padrino::Test::Files 
 end
