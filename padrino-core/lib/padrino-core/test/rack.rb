@@ -1,11 +1,16 @@
 module Padrino
   module Test
     module Rack
-    
-      def mock_app(&block)
-      
-      end
-      
+      ##
+      # Do something in context of given application.
+      #
+      # ==== Examples
+      #
+      #   within_app(MyFakeApp.new) do
+      #     get("/hello")
+      #     post("/world")
+      #   end
+      #
       def within_app(app)
         tmp = self.app
         set_app(app)
@@ -14,10 +19,16 @@ module Padrino
         set_app(tmp)
       end
       
+      ##
+      # Set given app for Rack tests.
+      # 
       def set_app(app)
         @app = app
       end
       
+      ##
+      # Returns current Rack test app.
+      #
       def app
         @app
       end
