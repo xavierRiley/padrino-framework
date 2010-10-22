@@ -1,0 +1,7 @@
+require File.expand_path('../config/boot', __FILE__)
+
+##
+# Add your own tasks in files placed in: tasks/*.rake, lib/tasks/*.rake 
+# or app/tasks/*.rake, and they will automatically be available to Rake.
+#
+Padrino.load_rake_tasks

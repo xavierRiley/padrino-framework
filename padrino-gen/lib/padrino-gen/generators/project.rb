@@ -51,6 +51,7 @@ module Padrino
           app_skeleton('app', options[:tiny])
           store_component_config('.components')
           template "templates/Gemfile.tt", destination_root("Gemfile")
+          template "templates/Rakefile.tt", destination_root("Rakefile")
         end
       end
 
