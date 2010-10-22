@@ -1,5 +1,4 @@
 module Padrino
-
   ##
   # Run the Padrino apps as a self-hosted server using: thin, mongrel, webrick 
   # in that order.
