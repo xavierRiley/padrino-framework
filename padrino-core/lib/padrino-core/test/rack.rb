@@ -1,6 +1,28 @@
+require 'rack'
+
 module Padrino
   module Test
     module Rack
+      ##
+      # Prepares mock application based on given class. Given class have to 
+      # inherits from <tt>Sinatra::Application</tt> based.
+      #
+      # ==== Examples
+      #
+      #   mock_app do
+      #     get "/hello" do
+      #       "Hello world!"
+      #     end
+      #   end
+      #
+      #   mock_app(Sinatra::Application) do
+      #     ...
+      #   end
+      #
+      def mock_app(base=Padrino::Application, &block)
+        set_app(Sinatra.new(base, &block))
+      end
+    
       ##
       # Do something in context of given application.
       #
@@ -30,7 +52,7 @@ module Padrino
       # Returns current Rack test app.
       #
       def app
-        @app
+        @app.kind_of?(Sinatra::Application) ? ::Rack::Lint.new(@app) : @app
       end
       
     end # Rack

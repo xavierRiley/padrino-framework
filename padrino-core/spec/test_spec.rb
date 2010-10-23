@@ -92,6 +92,13 @@ describe "Padrino's test helpers" do
       res.should == test_app
       app.should_not == test_app 
     end
+    
+    it "#mock_app should produce application based on given class with given block evaluated" do
+      mock_app(Sinatra::Application) do
+        get("/foo") { "Hello world!" }
+      end
+      get("/foo").body.should == "Hello world!"
+    end
   end
   
   context "for Runtime" do
