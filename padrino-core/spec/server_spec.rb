@@ -1,6 +1,10 @@
-require File.join(File.dirname(__FILE__), 'spec_helper')
+require File.expand_path('../spec_helper', __FILE__)
 
 describe Padrino::Server do
+  subject do
+    Padrino::Server
+  end
+
   before do
     unless defined?(MockHandler)
       MockHandler = mock
@@ -43,7 +47,7 @@ describe Padrino::Server do
       end
     end
     
-    when "when given config.ru doesn't exist, and there is config/boot.rb" do
+    context "when given config.ru doesn't exist, and there is config/boot.rb" do
       it "is racking it up properly" do
         pending
         #PADRINO_ROOT.replace(path_to(__FILE__, "fixtures/apps/rackup-boot"))
@@ -51,7 +55,7 @@ describe Padrino::Server do
       end
     end
     
-    when "when given config.ru doesn't exist, and there is no config/boot.rb" do
+    context "when given config.ru doesn't exist, and there is no config/boot.rb" do
       it "is racking up Padrino.application" do
       
       end

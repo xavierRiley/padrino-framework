@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), 'spec_helper')
+require File.expand_path('../../spec_helper', __FILE__)
 
 describe Padrino::Test::Runtime do
   describe "#without_argv" do

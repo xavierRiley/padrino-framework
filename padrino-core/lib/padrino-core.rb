@@ -1,3 +1,4 @@
+require 'pathname'
 require 'sinatra/base'
 #require 'padrino-core/support_lite' unless defined?(SupportLite)
 
@@ -10,25 +11,48 @@ require 'sinatra/base'
 #PADRINO_ROOT = ENV["PADRINO_ROOT"] ||= File.dirname(Padrino.first_caller) unless defined?(PADRINO_ROOT)
 
 module Padrino
+  autoload :Test,      "padrino-core/test"
+  autoload :Server,    "padrino-core/server"
   autoload :Cluster,   "padrino-core/cluster"
   autoload :Mountable, "padrino-core/cluster"
-  autoload :Test,      "padrino-core/test"
   
   class ApplicationLoadError < RuntimeError #:nodoc:
+  end
+  
+  class Application < Sinatra::Application
   end
 
   class << self
     ##
-    # Helper method for file references.
+    # Run the Padrino apps as a self-hosted server using: thin, mongrel, webrick 
+    # in that order.
     #
     # ==== Examples
     #
-    #   # Referencing a file in config called settings.yml
-    #   Padrino.root("config", "settings.yml")
-    #   # returns PADRINO_ROOT + "/config/setting.yml"
+    #   Padrino.run! 
+    # ... will start server at localhost on port 3000 using the first found handler.
     #
-    def root(*args)
-      File.expand_path(File.join(PADRINO_ROOT, *args))
+    #   Padrino.run!(:Host => "localhost", :Port => "4000", :server => "mongrel")
+    # ... will start server at localhost on port 4000 using mongrel handler.
+    # 
+    def run!(options={})
+      Server.start(options)
+    end
+    
+    ##
+    # Manipulates root path of current Padrino project.
+    #
+    # ==== Examples
+    #   
+    #   Padrino.root("/home/my/app")
+    #   Padrino.root # => "/home/my/app"
+    #   Padrino.root.join("config", "settings.yml") # => "/home/my/app/config/settings.yml"
+    #
+    #
+    # TODO: add first caller by default
+    def root(path=nil)
+      @root = Pathname.new(path) if path
+      @root
     end
 
     ##
@@ -43,7 +67,7 @@ module Padrino
     #
     # TODO: Somewhere we have to raise error abount no mounted apps. 
     def application
-      @application ||= Rack::Builder.new { run Padrino::Cluster.new }
+      @application ||= Rack::Builder.new { run Cluster.new }
     end
     
     ##
@@ -60,7 +84,10 @@ module Padrino
     def mount(app)
       application.to_app.mount(app)
     end
+  end # self
+end # Padrino
 
+=begin
     ##
     # Default encoding to UTF8.
     #
@@ -95,3 +122,4 @@ module Padrino
     end
   end # self
 end # Padrino
+=end

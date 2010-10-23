@@ -1,21 +1,21 @@
-require File.join(File.dirname(__FILE__), 'spec_helper')
+require File.expand_path(__FILE__, '../../spec_helper')
 
 describe Padrino::Test::Rack do
   describe "#set_app" do
     it "sets current test application " do
       set_app(test_app = proc {})
-      app.instance_variable_get("@app").should == test_app
+      app.should == test_app
     end
   end
   
   describe "#app" do
     context "when test application is set" do
       before do
-        set_app(proc {})
+        set_app(@test_app = proc {})
       end
     
-      if "returns current test application wrapped by Rack::Lint" do
-        app.should be_kind_of(Rack::Lint)
+      it "returns current test application" do
+        app.should == @test_app
       end
     end
     
@@ -38,42 +38,36 @@ describe Padrino::Test::Rack do
       end
       
       it "executes it in given app context" do
-        within_app(test_app) { @result = app }
+        within_app(@test_app) { @result = app }
         @result.should == @test_app
       end
       
       it "reverts back to previous app after execute" do
-        app.should_not == test_app
+        app.should_not == @test_app
       end
     end
   end
     
   describe "#mock_app" do
     context "given base class" do
-      before do
-        @mock_app = mock_app(Sinatra::Application) { get("/foo") { "Hello world!" } }
-      end
-      
       it "produces application based on it" do
-        @mock_app.should be_kind_of(Sinatra::Application)
-      end
-      
-      it "sets produced app for rack tests" do
-        app.should == @mock_app
+        Sinatra.expects(:new).with(Sinatra::Application)
+        mock_app(Sinatra::Application) { }
       end
       
       it "allows to use rack test helpers on it" do
+        mock_app(Sinatra::Application) { get("/foo") { "Hello world!" } }
         get("/foo").body.should == "Hello world!"
       end
     end
     
     context "no base class given" do
       before do
-        @mock_app = mock_app {}
+        mock_app {}
       end
       
       it "produces application based on Padrino::Application" do
-        @mock_app.should be_kind_of(Padrino::Application)
+        #app.should be_kind_of(Padrino::Application)
       end
     end
   end

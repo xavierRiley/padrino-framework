@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), 'spec_helper')
+require File.expand_path('../../spec_helper', __FILE__)
 
 describe Padrino::Test::Files do
   describe "#path" do
@@ -27,7 +27,7 @@ describe Padrino::Test::Files do
       end
       
       it "creates given directory" do
-        within_dir(__FILE__, "tmp") {|dir| @result = File.directory?(res) }
+        within_dir(__FILE__, "tmp") {|dir| @result = File.directory?(dir) }
         @result.should be_true
       end
     

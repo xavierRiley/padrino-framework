@@ -1,12 +1,3 @@
-begin
-  require File.expand_path('../.bundle/environment', __FILE__)
-rescue LoadError
-  if defined?(Gem)
-    Gem.cache
-    gem 'bundler'
-  else
-    require 'rubygems'
-  end
-  require 'bundler'
-  Bundler.setup
+%w[core gen helpers mailer cache admin].each do |component|
+  $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), 'padrino-#{component}/lib'))
 end

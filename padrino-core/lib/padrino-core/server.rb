@@ -1,21 +1,5 @@
 module Padrino
   ##
-  # Run the Padrino apps as a self-hosted server using: thin, mongrel, webrick 
-  # in that order.
-  #
-  # ==== Examples
-  #
-  #   Padrino.run! 
-  # ... will start server at localhost on port 3000 using the first found handler.
-  #
-  #   Padrino.run!(:Host => "localhost", :Port => "4000", :server => "mongrel")
-  # ... will start server at localhost on port 4000 using mongrel handler.
-  # 
-  def self.run!(options={})
-    Server.start(options)
-  end
-  
-  ##
   # Extended and kickin-ass implementation of <tt>Rack::Server</tt> which  
   # handles eg. default configuration, padrino-related middleware stack, 
   # exceptions and so on...  

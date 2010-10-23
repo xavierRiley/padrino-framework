@@ -1,13 +1,13 @@
-require File.join(File.dirname(__FILE__), 'spec_helper')
+require File.expand_path('../spec_helper', __FILE__)
 
 describe "Padrino" do
-  it "should be a metagem that requires components" do
+  it "is a metapackage that requires components" do
     Object.should_not be_const_defined "Padrino"
     require 'padrino'
     Object.should be_const_defined "Padrino"
   end
   
-  it "should be able to autoload additional components" do
+  it "automatically loads additional components" do
     lambda {
       Padrino::Mailer
       Padrino::Helpers

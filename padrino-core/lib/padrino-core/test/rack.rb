@@ -52,7 +52,7 @@ module Padrino
       # Returns current Rack test app.
       #
       def app
-        @app ? ::Rack::Lint.new(@app) : nil
+        @app
       end
       
     end # Rack

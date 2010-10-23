@@ -7,10 +7,6 @@ rescue LoadError
   require 'rake'
 end
 
-%w[core gen helpers mailer cache admin].each do |component|
-  $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), 'padrino-#{component}/lib'))
-end
-
 rspec_opts = %q[--colour --backtrace --require rspec/instafail --format RSpec::Instafail]
 rcov_opts  = %q[--exclude 'spec,^/usr/lib,^/usr/local/lib,^/var' --text-report]
 
