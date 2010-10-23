@@ -12,6 +12,7 @@ require 'sinatra/base'
 module Padrino
   autoload :Cluster,   "padrino-core/cluster"
   autoload :Mountable, "padrino-core/cluster"
+  autoload :Test,      "padrino-core/test"
   
   class ApplicationLoadError < RuntimeError #:nodoc:
   end

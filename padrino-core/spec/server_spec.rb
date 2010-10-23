@@ -1,9 +1,6 @@
 require File.join(File.dirname(__FILE__), 'spec_helper')
-require "rack"
 
-PADRINO_ROOT = "" unless defined?(PADRINO_ROOT)
-
-describe "Padrino's Rack server" do
+describe Padrino::Server do
   before do
     unless defined?(MockHandler)
       MockHandler = mock
@@ -13,20 +10,8 @@ describe "Padrino's Rack server" do
     end
   end
   
-  def rackup(config)
-    #capture_output do
-      opts = { :config => config, :Port => 9001, :server => 'mock' }
-      MockHandler.expects(:run).once
-      Padrino.run!(opts)
-    #end
-  end
-  
-  subject do 
-    Padrino::Server
-  end
-  
-  context "on initialize" do
-    it "should convert :host and :port params to rack consistent" do
+  context "#initialize" do
+    it "converts :host and :port params to rack consistent :Host and :Port" do
       without_argv do
         srv = subject.new(:host => "test.host", :port => 9001)
         srv.options[:Host].should == "test.host"
@@ -36,7 +21,7 @@ describe "Padrino's Rack server" do
       end
     end
     
-    it "should set proper default options" do
+    it "sets default options properly" do
       without_argv do
         srv = subject.new
         srv.options[:Host].should == "127.0.0.1"
@@ -47,17 +32,29 @@ describe "Padrino's Rack server" do
     end
   end
   
-  context "on start" do
-    it "should properly resolve app when given config.ru exists" do
-      #app_path = path_to(__FILE__, "fixtures/apps/rackup-config")
-      #srv = subject.new(:config => path_to(app_path, "config.ru"))
-      #srv.app.should be_kind_of Rack::Builder
-      #within_app(srv.app) { get("/hello").should == "Hello world!" }
+  context "#start" do
+    context "when given config.ru exists" do
+      it "is racking it up properly" do
+        pending
+        #app_path = path_to(__FILE__, "fixtures/apps/rackup-config")
+        #srv = subject.new(:config => path_to(app_path, "config.ru"))
+        #srv.app.should be_kind_of Rack::Builder
+        #within_app(srv.app) { get("/hello").should == "Hello world!" }
+      end
     end
     
-    it "should rack up config/boot.rb when config.ru doesn't exist" do
-      #PADRINO_ROOT.replace(path_to(__FILE__, "fixtures/apps/rackup-boot"))
-      #rackup(path_to(PADRINO_ROOT, "config.ru"))
+    when "when given config.ru doesn't exist, and there is config/boot.rb" do
+      it "is racking it up properly" do
+        pending
+        #PADRINO_ROOT.replace(path_to(__FILE__, "fixtures/apps/rackup-boot"))
+        #rackup(path_to(PADRINO_ROOT, "config.ru"))
+      end
+    end
+    
+    when "when given config.ru doesn't exist, and there is no config/boot.rb" do
+      it "is racking up Padrino.application" do
+      
+      end
     end
   end
 end

@@ -13,8 +13,8 @@ module Padrino
       #     end
       #   end 
       #
-      def inline_class(&block)
-        klass = Class.new(Object)
+      def inline_class(base=Object, &block)
+        klass = Class.new(base)
         klass.instance_eval(&block) if block_given?
         klass
       end

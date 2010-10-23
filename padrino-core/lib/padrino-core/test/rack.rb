@@ -52,7 +52,7 @@ module Padrino
       # Returns current Rack test app.
       #
       def app
-        @app.kind_of?(Sinatra::Application) ? ::Rack::Lint.new(@app) : @app
+        @app ? ::Rack::Lint.new(@app) : nil
       end
       
     end # Rack
