@@ -2,14 +2,6 @@ require 'pathname'
 require 'sinatra/base'
 #require 'padrino-core/support_lite' unless defined?(SupportLite)
 
-#FileSet.glob_require('padrino-core/application/*.rb', __FILE__)
-#FileSet.glob_require('padrino-core/*.rb', __FILE__)
-
-# Defines our Constants
-#PADRINO_ENV  = ENV["PADRINO_ENV"]  ||= ENV["RACK_ENV"] ||= "development"  unless defined?(PADRINO_ENV)
-#XXX: doesn't work
-#PADRINO_ROOT = ENV["PADRINO_ROOT"] ||= File.dirname(Padrino.first_caller) unless defined?(PADRINO_ROOT)
-
 module Padrino
   autoload :Test,      "padrino-core/test"
   autoload :Server,    "padrino-core/server"
@@ -48,7 +40,6 @@ module Padrino
     #   Padrino.root # => "/home/my/app"
     #   Padrino.root.join("config", "settings.yml") # => "/home/my/app/config/settings.yml"
     #
-    #
     # TODO: add first caller by default
     def root(path=nil)
       @root = Pathname.new(path) if path
@@ -69,6 +60,13 @@ module Padrino
     # TODO: Somewhere we have to raise error abount no mounted apps. 
     def application
       @application ||= Rack::Builder.new { run Cluster.new }
+    end
+    
+    ##
+    # Returns hash of mounted applications.
+    #
+    def mountables
+      Hash.new[application.to_app.mountables.map {|m| [m.name, m.app] }.flatten]
     end
     
     ##
