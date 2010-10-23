@@ -12,6 +12,10 @@ require 'padrino'
 
 RSpec.configure do |conf|
   conf.mock_with :mocha
+  conf.exclusion_filter = { 
+    :ruby => lambda {|version| !(RUBY_VERSION.to_s =~ /^#{version.to_s}/) }
+  }
+  
   conf.include Rack::Test::Methods
   conf.include Padrino::Test::Meta
   conf.include Padrino::Test::IO

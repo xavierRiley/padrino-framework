@@ -56,10 +56,11 @@ module Padrino
     end
 
     ##
-    # Helper method that return PADRINO_ENV
+    # Helper method that returns current Padrino environment.
     #
-    def env
-      @_env ||= PADRINO_ENV.to_s.downcase.to_sym
+    def env(env=nil)
+      @env = env.to_s if env
+      @env ||= ENV["PADRINO_ENV"] || ENV["RACK_ENV"] || "development"
     end
 
     ##
@@ -84,23 +85,23 @@ module Padrino
     def mount(app)
       application.to_app.mount(app)
     end
-  end # self
-end # Padrino
-
-=begin
+    
     ##
     # Default encoding to UTF8.
     #
     def set_encoding
-      if RUBY_VERSION < '1.9'
-        $KCODE='u'
-      else
+      unless RUBY_VERSION < '1.9'
         Encoding.default_external = Encoding::UTF_8
         Encoding.default_internal = Encoding::UTF_8
+      else
+        $KCODE='u'
       end
       nil
     end
+  end # self
+end # Padrino
 
+=begin
     ##
     # Returns the used $LOAD_PATHS from padrino
     #
