@@ -1,15 +1,18 @@
 require 'sinatra/base'
-require 'padrino-core/support_lite' unless defined?(SupportLite)
+#require 'padrino-core/support_lite' unless defined?(SupportLite)
 
-FileSet.glob_require('padrino-core/application/*.rb', __FILE__)
-FileSet.glob_require('padrino-core/*.rb', __FILE__)
+#FileSet.glob_require('padrino-core/application/*.rb', __FILE__)
+#FileSet.glob_require('padrino-core/*.rb', __FILE__)
 
 # Defines our Constants
-PADRINO_ENV  = ENV["PADRINO_ENV"]  ||= ENV["RACK_ENV"] ||= "development"  unless defined?(PADRINO_ENV)
+#PADRINO_ENV  = ENV["PADRINO_ENV"]  ||= ENV["RACK_ENV"] ||= "development"  unless defined?(PADRINO_ENV)
 #XXX: doesn't work
 #PADRINO_ROOT = ENV["PADRINO_ROOT"] ||= File.dirname(Padrino.first_caller) unless defined?(PADRINO_ROOT)
 
 module Padrino
+  autoload :Cluster,   "padrino-core/cluster"
+  autoload :Mountable, "padrino-core/cluster"
+  
   class ApplicationLoadError < RuntimeError #:nodoc:
   end
 
@@ -35,13 +38,26 @@ module Padrino
     end
 
     ##
-    # Returns the resulting rack builder mapping each 'mounted' application
+    # Returns the resulting rack builder powered by Padrino cluster. 
     #
+    # TODO: Somewhere we have to raise error abount no mounted apps. 
     def application
-      raise ApplicationLoadError, "At least one app must be mounted!" unless self.mounted_apps && self.mounted_apps.any?
-      router = Padrino::Router.new
-      self.mounted_apps.each { |app| app.map_onto(router) }
-      router
+      @application ||= Rack::Builder.new { run Padrino::Cluster.new }
+    end
+    
+    ##
+    # Mounts given rack application on to Padrino apps cluster. 
+    #
+    # ==== Examples
+    #
+    #   Padrino.mount(FirstApp).to("/")
+    #   Padrino.mount(SecondApp).bind("host.com").to("/")
+    #   Padrino.mount(ThirdApp).to("/path").as(:third_one)
+    #
+    # See <tt>Padrino::Cluster</tt> for details.
+    #
+    def mount(app)
+      application.to_app.mount(app)
     end
 
     ##
