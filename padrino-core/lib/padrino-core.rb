@@ -1,6 +1,7 @@
 require 'pathname'
 require 'sinatra/base'
-#require 'padrino-core/support_lite' unless defined?(SupportLite)
+
+require 'padrino-core/support'
 
 module Padrino
   autoload :Test,        "padrino-core/test"
