@@ -1,5 +1,8 @@
+# XXX: We have to run seperate tests on Hudson to check if there is no problems
+# with usign Extlib and AS. 
+
 begin
-  # ActiveSupport (3.0) is loaded by defauld...
+  # ActiveSupport (3.0) is loaded by default...
   
   require 'active_support/core_ext/string/conversions' 
   require 'active_support/core_ext/kernel'
@@ -24,7 +27,7 @@ begin
   Mash = ActiveSupport::HashWithIndifferentAccess
   Inflector = ActiveSupport::Inflector
 rescue LoadError
-  # If ActiveSupport will be not found, then we are using Merb's Extlib. 
+  # ...if ActiveSupport will be not found, then we are using Merb's Extlib. 
 
   require 'extlib/inflection'
   require 'extlib/mash'
