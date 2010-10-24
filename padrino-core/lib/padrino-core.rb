@@ -3,10 +3,11 @@ require 'sinatra/base'
 #require 'padrino-core/support_lite' unless defined?(SupportLite)
 
 module Padrino
-  autoload :Test,      "padrino-core/test"
-  autoload :Server,    "padrino-core/server"
-  autoload :Cluster,   "padrino-core/cluster"
-  autoload :Mountable, "padrino-core/cluster"
+  autoload :Test,        "padrino-core/test"
+  autoload :Server,      "padrino-core/server"
+  autoload :Cluster,     "padrino-core/cluster"
+  autoload :Mountable,   "padrino-core/cluster"
+  #autoload :Application, "padrino-core/application"
   
   class ApplicationLoadError < RuntimeError #:nodoc:
   end
@@ -63,10 +64,13 @@ module Padrino
     end
     
     ##
-    # Returns hash of mounted applications.
+    # Returns hash with mounted applications.
     #
-    def mountables
-      Hash.new[application.to_app.mountables.map {|m| [m.name, m.app] }.flatten]
+    # TODO: add underscore to class name. 
+    def mounted_apps
+      @mounted_apps ||= Hash[*application.to_app.mountables.map {|m|
+        [m.name || m.app.class.name, m.app]
+      }.flatten]
     end
     
     ##

@@ -115,4 +115,12 @@ describe Padrino do
       pending
     end
   end
+  
+  describe "#applications" do
+    it "returns hash with mounted apps" do
+      subject.instance_variable_set("@application", nil)
+      subject.mount(app = proc {}).to("/").as(:test)
+      subject.mounted_apps[:test].should == app
+    end
+  end
 end
