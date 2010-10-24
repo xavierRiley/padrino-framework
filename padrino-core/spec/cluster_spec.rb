@@ -71,6 +71,16 @@ describe Padrino::Cluster do
     it "routes properly to given port with wildcard" do
       request("/", "HTTP_HOST" => "host.com", "SERVER_PORT" => 994).body.should == "6"
     end
+    
+    context "when there is no proper app to serve" do 
+      before do
+        set_app(subject.new)
+      end
+      
+      it "shows 404 status" do
+        request("/not/exists", "HTTP_HOST" => "foo.bar.pl").status.should == 404
+      end
+    end
   end
 end
 
