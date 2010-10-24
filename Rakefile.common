@@ -7,7 +7,7 @@ rescue LoadError
   require 'rake'
 end
 
-rspec_opts = %q[--colour --backtrace --require rspec/instafail --format RSpec::Instafail]
+rspec_opts = %q[--colour --backtrace]
 rcov_opts  = %q[--exclude 'spec,^/usr/lib,^/usr/local/lib,^/var' --text-report]
 
 require 'rspec/core/rake_task'

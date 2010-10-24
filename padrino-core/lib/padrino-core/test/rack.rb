@@ -1,8 +1,11 @@
 require 'rack'
+require 'rack/test'
 
 module Padrino
   module Test
     module Rack
+      include ::Rack::Test::Methods
+    
       ##
       # Prepares mock application based on given class. Given class have to 
       # inherits from <tt>Sinatra::Application</tt> based.

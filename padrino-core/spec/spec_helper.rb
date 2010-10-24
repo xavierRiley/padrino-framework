@@ -7,7 +7,6 @@ end
 require 'rubygems'
 require 'mocha'
 require 'rspec'
-require 'rack/test'
 require 'padrino'
 
 RSpec.configure do |conf|
@@ -16,7 +15,6 @@ RSpec.configure do |conf|
     :ruby => lambda {|version| !(RUBY_VERSION.to_s =~ /^#{version.to_s}/) }
   }
   
-  conf.include Rack::Test::Methods
   conf.include Padrino::Test::Meta
   conf.include Padrino::Test::IO
   conf.include Padrino::Test::Files 
