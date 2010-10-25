@@ -14,18 +14,20 @@ begin
   require 'active_support/core_ext/hash/slice'
   require 'active_support/core_ext/object/blank'
   require 'active_support/core_ext/array'
+  require 'active_support/core_ext/float/rounding'
   require 'active_support/ordered_hash'
   require 'active_support/inflector'
-  require 'active_support/core_ext/float/rounding'
   require 'active_support/option_merger'
+  require 'active_support/hash_with_indifferent_access'
 
   begin
     require 'active_support/core_ext/symbol'
   rescue LoadError
   end
 
-  Mash = ActiveSupport::HashWithIndifferentAccess
-  Inflector = ActiveSupport::Inflector
+  Mash       = ActiveSupport::HashWithIndifferentAccess
+  Inflector  = ActiveSupport::Inflector
+  Dictionary = ActiveSupport::OrderedHash
 rescue LoadError
   # ...if ActiveSupport will be not found, then we are using Merb's Extlib. 
 

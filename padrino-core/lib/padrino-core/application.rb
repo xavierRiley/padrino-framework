@@ -1,4 +1,10 @@
 module Padrino
+  class Application < Sinatra::Base
+  end
+end
+
+=begin
+module Padrino
   class ApplicationSetupError < RuntimeError #:nodoc:
   end
 
@@ -234,3 +240,4 @@ module Padrino
       end
   end # Application
 end # Padrino
+=end

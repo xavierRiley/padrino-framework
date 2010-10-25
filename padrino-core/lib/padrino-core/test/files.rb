@@ -37,6 +37,28 @@ module Padrino
         FileUtils.rm_rf(remove) if remove
       end
       
+      ##
+      # Creates temporary view file with given content. 
+      #
+      # ==== Examples
+      #
+      #   with_view(__FILE__, "test/foo.html", "Test!") { ... }
+      #   with_view(__FILE__, "test/foo.html.haml", "Test!")  { ... }
+      #   with_view(__FILE__, "test/foo.pl.html", "Test!") { ... }
+      #
+      def with_view(root, path, content, options={})
+        within_dir(root, "views/layouts") do
+          path  = "/views/#{path}"
+          path += ".erb" unless options[:format].to_s =~ /(haml|rss|atom)$/ 
+          path += ".builder" if options[:format].to_s =~ /(rss|atom)$/
+          File.open(file = File.expand_path("../#{path}", root), 'w') do |f| 
+            f.write content 
+          end
+          yield(file)
+        end
+      end
+      alias :with_layout :with_view
+      
     end # Files
   end # Test
 end # Padrino

@@ -7,6 +7,25 @@ describe Padrino::Test::Files do
     end
   end
   
+  context "#with_view" do
+    before :each do
+      @fname = path_to(__FILE__, "views/test.html")
+      @result  = nil
+    end
+    
+    it "creates given directory" do
+      fname = @fname
+      with_view(__FILE__, "test.html", "Test!") {|f| @result = File.read(f) }
+      @result.should == "Test!"
+    end
+  
+    it "removes automaticaly created directory after block execution" do
+      @fname = path_to(__FILE__, "views")
+      within_dir(__FILE__, "test.html", "Test!") { }
+      File.should_not be_exists @fname
+    end
+  end
+  
   context "#within_dir" do
     context "when given directory exists" do
       before :each do

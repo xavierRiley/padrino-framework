@@ -12,6 +12,8 @@ module Padrino
     %r{lib/mongrel.*\.rb$},                          # all mongrel code
     %r{lib/shotgun.*\.rb$},                          # all shotgun lib
     %r{bin/shotgun$},                                # shotgun binary
+    %r{lib/unicorn.*\.rb$},                          # all unicorn lib
+    %r{bin/unicorn$}                                 # unicorn binary
     %r{\(.*\)},                                      # generated code
     %r{shoulda/context\.rb$},                        # shoulda hacks
     %r{mocha/integration},                           # mocha hacks
@@ -32,7 +34,7 @@ module Padrino
     # Returns the filename for the file that is the direct caller (first caller)
     #
     def first_caller
-      caller_files.first
+      @first_caller ||= caller_files.first
     end
     private :first_caller
 
@@ -41,7 +43,7 @@ module Padrino
     # line / method information; the resulting array contains filenames only.
     #
     def caller_files
-      caller(1)
+      @caller_files ||= caller(1)
         map    { |line| line.split(/:(?=\d|in )/)[0,2] }.
         reject { |file,line| PADRINO_IGNORE_CALLERS.any? { |pattern| file =~ pattern } }.
         map    { |file,line| file }

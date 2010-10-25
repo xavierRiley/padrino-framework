@@ -8,15 +8,24 @@ module Padrino
   autoload :Server,      "padrino-core/server"
   autoload :Cluster,     "padrino-core/cluster"
   autoload :Mountable,   "padrino-core/cluster"
-  #autoload :Application, "padrino-core/application"
+  autoload :Application, "padrino-core/application"
+  autoload :Rendering,   "padrino-core/rendering"
   
-  class ApplicationLoadError < RuntimeError #:nodoc:
-  end
+  #class ApplicationLoadError < RuntimeError #:nodoc:
+  #end
   
-  class Application < Sinatra::Application
-  end
-
   class << self
+    ##
+    # Resets Padrino global settings. 
+    #
+    def reset!
+      @env = nil
+      @root = nil
+      @application = nil
+      @mounted_apps = nil
+      true
+    end
+  
     ##
     # Run the Padrino apps as a self-hosted server using: thin, mongrel, webrick 
     # in that order.
@@ -69,7 +78,7 @@ module Padrino
     #
     # TODO: add underscore to class name. 
     def mounted_apps
-      @mounted_apps ||= Hash[*application.to_app.mountables.map {|m|
+      @mounted_apps ||= Dictionary[*application.to_app.mountables.map {|m|
         [m.name || m.app.class.name, m.app]
       }.flatten]
     end

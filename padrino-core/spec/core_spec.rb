@@ -4,7 +4,7 @@ describe Padrino do
   subject do
     Padrino
   end
-
+  
   describe "#root" do
     context "when path given" do
       it "sets it as project root" do
@@ -30,7 +30,7 @@ describe Padrino do
     
       context "when root path has not been set yet" do
         before do
-          subject.instance_variable_set("@path", nil) 
+          subject.reset!
         end
         
         it "uses first caller's directory as project root" do
@@ -65,7 +65,7 @@ describe Padrino do
       
       context "when env has not been set yet" do
         before :each do
-          subject.instance_variable_set("@env", nil)
+          subject.reset!
         end
         
         it "is development by default" do
@@ -118,9 +118,21 @@ describe Padrino do
   
   describe "#applications" do
     it "returns hash with mounted apps" do
-      subject.instance_variable_set("@application", nil)
+      subject.reset!
       subject.mount(app = proc {}).to("/").as(:test)
       subject.mounted_apps[:test].should == app
+    end
+  end
+  
+  describe "#reset!" do
+    before do
+      @vars = %w[application root mounted_apps env]
+      @vars.each {|var| subject.instance_variable_set("@#{var}", :test) }
+    end
+    
+    it "resets all global padrino settings" do
+      subject.reset!
+      @vars.each {|var| subject.instance_variable_get("@#{var}").should_not be }
     end
   end
 end
