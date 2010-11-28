@@ -27,14 +27,14 @@ module Padrino
     DEFAULT_OPTIONS = { 
       :strict_format    => false, 
       :raise_exceptions => true,
+      :root_layouts     => false,
     }
     
     class << self
       def included(app) # :nodoc:
-        DEFAULT_OPTIONS.each {|k,v| app.set(k, v) } 
+        DEFAULT_OPTIONS.each {|k,v| app.set(k, v) } if app.respond_to?(:set) 
         app.send :extend, ClassMethods
         app.send :include, InstanceMethods
-        app.disable :root_layouts 
       end
       alias :registered :included
     end # << self

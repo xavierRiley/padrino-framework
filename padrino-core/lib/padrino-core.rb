@@ -4,7 +4,6 @@ require 'sinatra/base'
 require 'padrino-core/support'
 
 module Padrino
-  autoload :Test,        "padrino-core/test"
   autoload :Server,      "padrino-core/server"
   autoload :Cluster,     "padrino-core/cluster"
   autoload :Mountable,   "padrino-core/cluster"

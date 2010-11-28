@@ -1,3 +1,5 @@
+require File.expand_path('../../../load_paths', __FILE__)
+
 require 'mocha'
 require 'rspec'
 require 'padrino'
