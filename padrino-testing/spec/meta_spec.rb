@@ -1,6 +1,6 @@
-require File.expand_path('../../spec_helper', __FILE__)
+require File.expand_path('../spec_helper', __FILE__)
 
-describe Padrino::Test::Meta do
+describe Padrino::Testing::Meta do
   describe "#inline_module" do
     context "no block given" do
       it "creates empty module" do

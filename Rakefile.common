@@ -1,7 +1,22 @@
 #!/usr/bin/env ruby
 
+padrino_load_paths = [
+  '', 
+  '-core', 
+  '-gen', 
+  '-helpers', 
+  '-mailer', 
+  '-cache', 
+  '-admin', 
+  '-testing',
+].map { |component|
+  '-I'+File.expand_path('../../padrino#{component}/lib', __FILE__)
+}.join(' ')
+
+# RSpec and rcov runtime options. Notice that all padrino load paths
+# are included automatically here...
 rspec_pattern = 'spec/**/*_spec.rb'
-rspec_opts    = %q[--colour --backtrace]
+rspec_opts    = %q[--colour --backtrace ] + padrino_load_paths
 rcov_opts     = %q[--exclude 'spec,^/usr/lib,^/usr/local/lib,^/var' --text-report]
 
 require 'rspec/core/rake_task'

@@ -1,6 +1,6 @@
-require File.expand_path('../../spec_helper', __FILE__)
+require File.expand_path('../spec_helper', __FILE__)
 
-describe Padrino::Test::Files do
+describe Padrino::Testing::Files do
   describe "#path" do
     it "returns expanded path to given file" do
       path_to(__FILE__, "fixtures/apps").should == File.expand_path('fixtures/apps', File.dirname(__FILE__))

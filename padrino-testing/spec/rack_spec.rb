@@ -1,6 +1,6 @@
-require File.expand_path('../../spec_helper', __FILE__)
+require File.expand_path('../spec_helper', __FILE__)
 
-describe Padrino::Test::Rack do
+describe Padrino::Testing::Rack do
   describe "#set_app" do
     it "sets current test application " do
       set_app(test_app = proc {})

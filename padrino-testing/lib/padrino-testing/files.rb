@@ -2,7 +2,7 @@ require 'fileutils'
 require 'pathname'
 
 module Padrino
-  module Test
+  module Testing
     module Files
       ##
       # Expands given paths. 
@@ -60,5 +60,5 @@ module Padrino
       alias :with_layout :with_view
       
     end # Files
-  end # Test
+  end # Testing
 end # Padrino

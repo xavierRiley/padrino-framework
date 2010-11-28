@@ -7,6 +7,7 @@ module Padrino
   autoload :Mailer,  "padrino-mailer"
   autoload :Admin,   "padrino-admin"
   autoload :Cache,   "padrino-cache"
+  autoload :Testing, "padrino-testing"
 end
 
 require 'padrino-core'

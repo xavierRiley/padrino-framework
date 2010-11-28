@@ -1,7 +1,7 @@
 require 'stringio'
 
 module Padrino
-  module Test
+  module Testing
     module IO
       ## 
       # Capture standard output and error streams.
@@ -60,5 +60,5 @@ module Padrino
       end
       
     end # IO
-  end # Test
+  end # Testing
 end # Padrino

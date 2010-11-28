@@ -1,6 +1,6 @@
-require File.expand_path('../../spec_helper', __FILE__)
+require File.expand_path('../spec_helper', __FILE__)
 
-describe Padrino::Test::IO do
+describe Padrino::Testing::IO do
   describe "#capture_output" do
     it "captures data from stdout" do
       out, err = capture_output { $stdout.puts "Hello..." }

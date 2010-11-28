@@ -1,5 +1,5 @@
 module Padrino
-  module Test
+  module Testing
     module Runtime
       ## 
       # Execute given block with empty ARGV. 
@@ -25,5 +25,5 @@ module Padrino
       end
       
     end # Runtime
-  end # Test
+  end # Testing
 end # Padrino

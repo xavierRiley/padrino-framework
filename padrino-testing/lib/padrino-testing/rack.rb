@@ -2,7 +2,7 @@ require 'rack'
 require 'rack/test'
 
 module Padrino
-  module Test
+  module Testing
     module Rack
       include ::Rack::Test::Methods
     
@@ -59,5 +59,5 @@ module Padrino
       end
       
     end # Rack
-  end # Test
+  end # Testing
 end # Padrino

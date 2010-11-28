@@ -1,5 +1,5 @@
 module Padrino
-  module Test
+  module Testing
     module Meta
       ##
       # Quickly create inline class with given block evaluated.
