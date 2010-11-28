@@ -1,18 +1,12 @@
 #!/usr/bin/env ruby
 
-begin
-  require 'rake'
-rescue LoadError
-  require 'rubygems'
-  require 'rake'
-end
-
-rspec_opts = %q[--colour --backtrace]
-rcov_opts  = %q[--exclude 'spec,^/usr/lib,^/usr/local/lib,^/var' --text-report]
+rspec_pattern = 'spec/**/*_spec.rb'
+rspec_opts    = %q[--colour --backtrace]
+rcov_opts     = %q[--exclude 'spec,^/usr/lib,^/usr/local/lib,^/var' --text-report]
 
 require 'rspec/core/rake_task'
 RSpec::Core::RakeTask.new(:spec) do |t|
-  t.pattern    = 'spec/**/*_spec.rb'
+  t.pattern    = rspec_pattern
   t.rspec_opts = rspec_opts
 end
 
@@ -23,8 +17,8 @@ RSpec::Core::RakeTask.new(:rcov) do |t|
 end
 
 RSpec::Core::RakeTask.new(:profile) do |t|
-  t.pattern    = 'spec/**/*_spec.rb'
-  t.rspec_opts = %q[--colour --backtrace --profile]
+  t.pattern    = rspec_pattern
+  t.rspec_opts = rspec_opts + ' --profile'
 end
 
 task :default => :spec
