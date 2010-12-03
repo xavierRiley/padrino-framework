@@ -40,20 +40,17 @@ module Padrino
         end
 
         def flush
-          FileUtils.rm_rf(@root)
+          FileUtils.rm_rf(@root.to_s)
         end
 
         private
+
         def path_for_key(key)
           ::File.join(@root, Rack::Utils.escape(key.to_s))
         end
 
         def init
-          unless @init
-            FileUtils.rm_rf(@root)
-            FileUtils.mkdir_p(@root)
-            @init = true
-          end
+          FileUtils.mkdir_p(@root) unless ::File.directory?(@root)
         end
       end # File
     end # Store

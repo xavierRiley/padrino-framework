@@ -57,4 +57,14 @@ describe Padrino::Testing::Files do
       end
     end
   end
+
+  describe "#make_tmpdir" do
+    it "should create unique directory in the tmp folder" do
+      tmpdir = make_tmpdir('test')
+      tmpdir.should be_kind_of(Pathname)
+      tmpdir.dirname.to_s.should == File.join(Dir.tmpdir, 'test')
+      tmpdir.should be_directory
+      tmpdir.dirname.rmtree
+    end
+  end
 end

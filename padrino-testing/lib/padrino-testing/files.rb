@@ -58,6 +58,23 @@ module Padrino
         end
       end
       alias :with_layout :with_view
+
+      ##
+      # Creates unique tempoprary directory. 
+      #
+      # ==== Examples
+      #
+      #   tmpdir = make_tmpdir('testing')
+      #   tmpdir.to_s 
+      #   tmpdir.unlink
+      #
+      def make_tmpdir(name)
+        require 'tmpdir'
+        require 'uuid'
+        path = File.join(Dir.tmpdir, name, UUID.new.generate)
+        FileUtils.mkdir_p(path)
+        Pathname.new(path)
+      end
       
     end # Files
   end # Testing
