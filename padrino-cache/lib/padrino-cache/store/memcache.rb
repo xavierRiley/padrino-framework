@@ -34,7 +34,7 @@ module Padrino
           @backend.delete(key)
         end
         
-        def flush
+        def flush!
           @backend.flush
         end
       end # Memcached

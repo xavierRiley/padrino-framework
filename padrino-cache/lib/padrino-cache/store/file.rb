@@ -39,7 +39,7 @@ module Padrino
           Array(key).each { |k| FileUtils.rm_rf(path_for_key(k)) }
         end
 
-        def flush
+        def flush!
           FileUtils.rm_rf(@root.to_s)
         end
 

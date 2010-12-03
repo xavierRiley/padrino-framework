@@ -29,7 +29,7 @@ module Padrino
           @backend.del(key)
         end
 
-        def flush
+        def flush!
           @backend.flushdb
         end
       end # Redis

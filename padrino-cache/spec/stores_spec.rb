@@ -2,7 +2,7 @@ require File.expand_path('../spec_helper', __FILE__)
 
 shared_examples_for "cache store" do
   after do
-    @cache.flush
+    @cache.flush!
   end
 
   it "should set and get a value" do
@@ -35,10 +35,10 @@ shared_examples_for "cache store" do
     end
   end
 
-  describe "#flush" do
+  describe "#flush!" do
     it "should remove all items" do
       3.times { |i| @cache.set(i.to_s, i.to_s) }
-      @cache.flush
+      @cache.flush!
       3.times { |i| @cache.get(i.to_s).should_not be }
     end
   end
@@ -62,8 +62,8 @@ describe "Padrino cache" do
       expect { @cache.delete('val') }.to raise_error(NotImplementedError)
     end
 
-    it "#flush should raise NotImplementedError" do
-      expect { @cache.flush }.to raise_error(NotImplementedError)
+    it "#flush! should raise NotImplementedError" do
+      expect { @cache.flush! }.to raise_error(NotImplementedError)
     end
 
     context "#[]" do

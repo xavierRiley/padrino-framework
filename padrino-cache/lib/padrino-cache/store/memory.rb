@@ -41,7 +41,7 @@ module Padrino
           @index.delete(key)
         end
 
-        def flush
+        def flush!
           @index = Hash.new
         end
       end # Memory

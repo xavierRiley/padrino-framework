@@ -22,9 +22,10 @@ module Padrino
           raise NotImplementedError, "#{self.class.name}#delete is not implemented."
         end
 
-        def flush
+        def flush!
           raise NotImplementedError, "#{self.class.name}#flush is not implemented."
         end
+        alias :flush :flush!
       end
     end # Store
   end # Cache
