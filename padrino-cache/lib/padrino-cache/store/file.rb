@@ -1,7 +1,7 @@
 module Padrino
   module Cache
     module Store
-      class File
+      class File < Abstract
         def initialize(root)
           @root = root
         end

@@ -1,7 +1,7 @@
 module Padrino
   module Cache
     module Store
-      class Memory
+      class Memory < Abstract
         def initialize(size = 5000)
           @size, @entries, @index = size, [], {}
         end

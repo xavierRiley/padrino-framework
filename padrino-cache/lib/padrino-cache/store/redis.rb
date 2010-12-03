@@ -7,7 +7,7 @@ end
 module Padrino
   module Cache
     module Store
-      class Redis
+      class Redis < Abstract
         def initialize(*args)
           @backend = ::Redis.new(*args)
         end

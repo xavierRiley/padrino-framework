@@ -10,13 +10,13 @@ shared_examples_for "cache store" do
     @cache.get('val').should == 'test'
   end
   
-  context "#get" do
+  describe "#get" do
     it "should return nil trying to get a value that doesn't exist" do
       @cache.get('not_exists').should_not be
     end
   end
 
-  context "#set" do
+  describe "#set" do
     context "when :expires_in option given" do
       it "should set a value that expires" do
         @cache.set('val', 'test', :expires_in => 1)
@@ -27,7 +27,7 @@ shared_examples_for "cache store" do
     end
   end
 
-  context "#delete" do
+  describe "#delete" do
     it "should remove given item" do
       @cache.set('val', 'test')
       @cache.delete('val')
@@ -35,7 +35,7 @@ shared_examples_for "cache store" do
     end
   end
 
-  context "#flush" do
+  describe "#flush" do
     it "should remove all items" do
       3.times { |i| @cache.set(i.to_s, i.to_s) }
       @cache.flush
@@ -45,6 +45,42 @@ shared_examples_for "cache store" do
 end
 
 describe "Padrino cache" do
+  describe "Abstract store" do
+    before do 
+      @cache = Padrino::Cache::Store::Abstract.new
+    end
+
+    it "#set should raise NotImplementedError" do
+      expect { @cache.set('val', 'test') }.to raise_error(NotImplementedError)
+    end
+
+    it "#get should raise NotImplementedError" do
+      expect { @cache.get('val') }.to raise_error(NotImplementedError)
+    end
+
+    it "#delete should raise NotImplementedError" do
+      expect { @cache.delete('val') }.to raise_error(NotImplementedError)
+    end
+
+    it "#flush should raise NotImplementedError" do
+      expect { @cache.flush }.to raise_error(NotImplementedError)
+    end
+
+    context "#[]" do
+      it "should be syntactic sugar for get" do
+        @cache.expects(:get).with('val').returns('test')
+        @cache['val'].should == 'test'
+      end
+    end
+
+    context "#[]=" do
+      it "should be syntactic sugar for set" do
+        @cache.expects(:set).with('val', 'test').returns('test')
+        (@cache['val'] = 'test').should == 'test'
+      end
+    end
+  end
+
   describe "Memcache store", :if_available => 'memcache' do
     before :all do
       @cache = Padrino::Cache::Store::Memcache.new('127.0.0.1:11211', :exception_retry_limit => 1)
