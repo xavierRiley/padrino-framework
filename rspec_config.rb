@@ -11,7 +11,7 @@ RSpec.configure do |conf|
       !(RUBY_VERSION.to_s =~ /^#{version.to_s}/) 
     },
     # library availability filter...
-    :if_available => lambda { |lib|
+    :require => lambda { |lib|
       begin
         require lib
         false

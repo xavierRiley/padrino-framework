@@ -81,7 +81,7 @@ describe "Padrino cache" do
     end
   end
 
-  describe "Memcache store", :if_available => 'memcache' do
+  describe "Memcache store", :require => 'memcache' do
     before :all do
       @cache = Padrino::Cache::Store::Memcache.new('127.0.0.1:11211', :exception_retry_limit => 1)
     end
@@ -89,7 +89,7 @@ describe "Padrino cache" do
     it_should_behave_like "cache store"
   end
 
-  describe "Redis store", :if_available => 'redis' do
+  describe "Redis store", :require => 'redis' do
     before :all do
       @cache = Padrino::Cache::Store::Redis.new(:host => '127.0.0.1', :port => 6379, :db => 0)
     end
