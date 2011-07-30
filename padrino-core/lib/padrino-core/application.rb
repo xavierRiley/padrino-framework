@@ -227,7 +227,6 @@ module Padrino
         def register_initializers
           use Padrino::ShowExceptions         if show_exceptions?
           use Padrino::Logger::Rack, uri_root if Padrino.logger && logging?
-          use Padrino::Reloader::Rack         if reload?
           use Rack::Flash, :sweep => true     if flash?
         end
 

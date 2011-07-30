@@ -22,7 +22,6 @@ module Padrino
       ensure_app_file! || ensure_app_object!
       @app_root  = options[:app_root]  || File.dirname(@app_file)
       @uri_root  = "/"
-      Padrino::Reloader.exclude_constants << @app_class
     end
 
     ##
@@ -133,9 +132,9 @@ module Padrino
       def locate_app_file
         candidates  = []
         candidates << app_constant.app_file if app_constant.respond_to?(:app_file) && File.exist?(app_constant.app_file.to_s)
-        candidates << Padrino.first_caller if File.identical?(Padrino.first_caller.to_s, Padrino.called_from.to_s)
         candidates << Padrino.mounted_root(name.downcase, "app.rb")
         candidates << Padrino.root("app", "app.rb")
+        candidates << Padrino.first_caller if File.identical?(Padrino.first_caller.to_s, Padrino.called_from.to_s)
         candidates.find { |candidate| File.exist?(candidate) }
       end
 
@@ -151,7 +150,7 @@ module Padrino
       # Raises an exception unless app_obj is defined properly
       #
       def ensure_app_object!
-        message = "Unable to locate app for '#{app_class}', try with :app_class => 'MyAppClass'"
+        message = "Unable to locate app for '#{app_class}' in '#{app_file}', try with :app_class => 'MyAppClass'"
         raise MounterException, message unless @app_obj
       end
   end

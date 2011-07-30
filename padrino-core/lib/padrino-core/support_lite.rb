@@ -97,17 +97,6 @@ class String
   end
 end
 
-module ObjectSpace
-  class << self
-    # Returns all the classes in the object space.
-    def classes
-      ObjectSpace.each_object(Module).select do |klass|
-        Class.class_eval { klass } rescue false
-      end
-    end
-  end
-end
-
 ##
 # FileSet helper method for iterating and interacting with files inside a directory
 #

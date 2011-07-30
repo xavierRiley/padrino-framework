@@ -42,45 +42,41 @@ module Padrino
     end
 
     ##
-    # Requires necessary dependencies as well as application files from root lib and models
+    # Require all necessary core dependencies
     #
-    def load!
-      return false if loaded?
+    def load_core!
       @_called_from = first_caller
       Padrino.set_encoding
       Padrino.set_load_paths(*load_paths) # We set the padrino load paths
       Padrino::Logger.setup! # Initialize our logger
       Padrino.require_dependencies("#{root}/config/database.rb", :nodeps => true) # Be sure to don't remove constants from dbs.
-      Padrino::Reloader.lock! # Now we can remove constant from here to down
-      Padrino.before_load.each(&:call) # Run before hooks
-      Padrino.dependency_paths.each { |path| Padrino.require_dependencies(path) }
-      Padrino.after_load.each(&:call) # Run after hooks
-      Padrino::Reloader.run!
       Thread.current[:padrino_loaded] = true
     end
 
     ##
-    # Clear the padrino env
+    # Requires necessary applications dependencies as well as application files from root lib and models
     #
-    def clear!
-      Padrino.clear_middleware!
-      Padrino.mounted_apps.clear
-      @_load_paths = nil
-      @_dependency_paths = nil
-      @_global_configuration = nil
-      Padrino.before_load.clear
-      Padrino.after_load.clear
-      Padrino::Reloader.clear!
-      Thread.current[:padrino_loaded] = nil
+    def load_application!
+      # stdout_was = STDOUT.dup
+      # STDOUT.reopen('/dev/null', 'a')
+      # $stdout = STDOUT
+      Padrino.before_load.each(&:call) # Run before hooks
+      Padrino.dependency_paths.each { |path| Padrino.require_dependencies(path) }
+      Padrino.after_load.each(&:call) # Run after hooks
+    #   stdout_was
+    # ensure
+    #   STDOUT.reopen(stdout_was)
+    #   $stdout = STDOUT
     end
 
     ##
-    # Method for reloading required applications and their files
+    # Load all core and application dependencies
     #
-    def reload!
-      Padrino.before_load.each(&:call) # Run before hooks
-      Padrino::Reloader.reload! # detects the modified files
-      Padrino.after_load.each(&:call) # Run after hooks
+    def load!
+      return false if loaded?
+      load_core!
+      load_application!
+      true
     end
 
     ##
@@ -94,7 +90,7 @@ module Padrino
     # Return true if Padrino was loaded with Padrino.load!
     #
     def loaded?
-      Thread.current[:padrino_loaded]
+      Thread.current[:padrino_loaded] || ENV["PADRINO_LOADED"]
     end
 
     ##
@@ -137,7 +133,7 @@ module Padrino
         # iteration, this prevent problems with rubinus
         files.dup.each do |file|
           begin
-            Padrino::Reloader.safe_load(file, options.dup)
+            require file
             files.delete(file)
           rescue LoadError => e
             errors << e

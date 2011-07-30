@@ -17,8 +17,10 @@ module Padrino
       method_option :daemonize,   :type => :boolean, :aliases => "-d", :desc => "Run daemonized in the background"
       method_option :pid,         :type => :string,  :aliases => "-i", :desc => "File to store pid"
       method_option :debug,       :type => :boolean,                   :desc => "Set debugging flags"
+      method_option :reload,      :type => :boolean,                   :desc => "Start the web server in reloading mode", :default => true
       def start
         prepare :start
+        ENV["PADRINO_LOADED"] = "1" if options.reload
         require File.expand_path("../adapter", __FILE__)
         require File.expand_path('config/boot.rb')
         Padrino::Cli::Adapter.start(options)

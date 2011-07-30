@@ -6,10 +6,64 @@ module Padrino
   # ==== Examples
   #
   #   Padrino.run! # with these defaults => host: "localhost", port: "3000", adapter: the first found
-  #   Padrino.run!("localhost", "4000", "mongrel") # use => host: "0.0.0.0", port: "3000", adapter: "mongrel"
+  #   Padrino.run!(:host => "localhost", :port => "4000", :server => "mongrel")
+  #   Padrino.run!(:reload => true)
   #
   def self.run!(options={})
-    Padrino.load!
+    unless options.delete(:reload)
+      Padrino.load!
+      Padrino::Server.start(Padrino.application, options)
+      return Padrino.application
+    end
+
+    Padrino.load_core!
+
+    loop do
+      @int       = false
+      @first_run = true
+      @pid       = fork { Padrino.load_application!; Padrino::Server.start(Padrino.application) }
+      @mtimes  ||= {}
+
+      trap(:HUP){ puts ">> Performing restart"; @int = true }
+
+      %w(INT KILL QUIT TERM).each do |signal|
+        trap(signal) do
+          if @int
+            puts "<= Padrino has ended his set (crowd applauds)"
+            exit
+          else
+            @int = true
+            puts ">> Press Interrupt a second time to really quit."
+            sleep 1.5
+            puts ">> Performing restart"
+          end
+        end
+      end
+
+      until @int do
+        Dir[Padrino.root("**/*.rb")].sort.each do |file|
+          if !@mtimes.has_key?(file)
+            logger.debug "Detected a new file: #{file}"
+            Process.kill(:HUP, Process.pid)
+            Process.kill(:INT, @pid)
+            @restart = true
+          elsif @mtimes[file] < File.mtime(file)
+            logger.debug "Detected modified file #{file}"
+            Process.kill(:HUP, Process.pid)
+            Process.kill(:INT, @pid)
+            @restart = true
+          end unless @first_run
+          @mtimes[file] = File.mtime(file)
+        end
+
+        @first_run = false
+        sleep 0.2
+      end
+
+      Process.waitpid(@pid)
+    end
+  rescue NotImplementedError
+    puts "=> Reloading is not available for your env."
     Server.start(Padrino.application, options)
   end
 
@@ -31,7 +85,7 @@ module Padrino
         FileUtils.mkdir_p(File.dirname(options[:pid]))
       end
       options[:server] = detect_rack_handler if options[:server].blank?
-      new(options, app).start
+      new(options, app).start unless options.delete(:reload)
     end
 
     def initialize(options, app)
@@ -40,10 +94,8 @@ module Padrino
 
     def start
       puts "=> Padrino/#{Padrino.version} has taken the stage #{Padrino.env} at http://#{options[:Host]}:#{options[:Port]}"
-      [:INT, :TERM].each { |sig| trap(sig) { exit } }
+      [:INT, :TERM, :KILL].each { |sig| trap(sig) { exit } }
       super
-    ensure
-      puts "<= Padrino has ended his set (crowd applauds)" unless options[:daemonize]
     end
 
     def app
