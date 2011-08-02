@@ -2,12 +2,7 @@ require 'http_router' unless defined?(HttpRouter)
 require 'padrino-core/support_lite' unless defined?(SupportLite)
 
 class Sinatra::Request #:nodoc:
-  attr_accessor :route_obj, :runner
-
-  def runner=(runner)
-    @runner = runner
-    env['padrino.instance'] = runner
-  end
+  attr_accessor :route_obj
 
   def controller
     route_obj && route_obj.controller
@@ -19,7 +14,7 @@ class HttpRouter #:nodoc:
   def rewrite_path_info(env, request); end
 
   def process_destination_path(path, env)
-    env['padrino.instance'].instance_eval do
+    Thread.current['padrino.instance'].instance_eval do
       request.route_obj = path.route
       @_response_buffer = nil
       @params ||= {}
@@ -666,7 +661,7 @@ module Padrino
           condition do
             mime_types        = types.map { |t| mime_type(t) }
             request.path_info =~ /\.([^\.\/]+)$/
-            url_format        = $1.to_sym if $1
+            url_format        = params[:format].to_sym if params[:format]
             accepts           = request.accept.map { |a| a.split(";")[0].strip }
 
             # per rfc2616-sec14:
@@ -674,9 +669,7 @@ module Padrino
             catch_all = (accepts.delete "*/*" || accepts.empty?)
             matching_types = accepts.empty? ? mime_types.slice(0,1) : (accepts & mime_types)
 
-            if params[:format]
-              accept_format = params[:format]
-            elsif !url_format && matching_types.first
+            if !url_format && matching_types.first
               type = ::Rack::Mime::MIME_TYPES.find { |k, v| v == matching_types.first }[0].sub(/\./,'').to_sym
               accept_format = CONTENT_TYPE_ALIASES[type] || type
             elsif catch_all
@@ -795,7 +788,7 @@ module Padrino
         end
 
         def route!(base=self.class, pass_block=nil)
-          @request.runner = self
+          Thread.current['padrino.instance'] = self
           if base.compiled_router and match = base.compiled_router.call(@request.env)
             if match.respond_to?(:each)
               route_eval do
