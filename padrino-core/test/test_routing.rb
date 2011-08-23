@@ -37,6 +37,9 @@ class TestRouting < Test::Unit::TestCase
       get %r{/([0-9]+)/} do |num|
        "Your lucky number: #{num} #{params[:captures].first}"
       end
+      get /\/page\/([0-9]+)|\// do |num|
+        "My lucky number: #{num} #{params[:captures].first}"
+      end
     end
     get "/foo"
     assert_equal "str", body
@@ -46,6 +49,8 @@ class TestRouting < Test::Unit::TestCase
     assert_equal "regexp", body
     get "/1234/"
     assert_equal "Your lucky number: 1234 1234", body
+    get "/page/99"
+    assert_equal "My lucky number: 99 99", body
   end
 
   should "parse routes with question marks" do
@@ -432,7 +437,7 @@ class TestRouting < Test::Unit::TestCase
     get "/"
     assert_equal "index", body
     assert_equal "/", @app.url(:index)
-    get "/accounts"
+    get "/accounts/index"
     assert_equal "accounts", body
   end
 
@@ -624,6 +629,20 @@ class TestRouting < Test::Unit::TestCase
     assert_equal "/admin/show/1", @app.url(:admin, :show, :id => 1)
     get "/foo/bar"
     assert_equal "foo_bar_index", body
+  end
+
+  should "support a reindex action and remove index inside controller" do
+    mock_app do
+      controller :posts do
+        get(:index){ "index" }
+        get(:reindex){ "reindex" }
+      end
+    end
+    get "/posts"
+    assert_equal "index", body
+    get "/posts/reindex"
+    assert_equal "/posts/reindex", @app.url(:posts, :reindex)
+    assert_equal "reindex", body
   end
 
   should 'use uri_root' do
@@ -888,7 +907,7 @@ class TestRouting < Test::Unit::TestCase
     assert_equal 406, status
   end
 
-  should "works allow global provides" do
+  should "does not allow global provides" do
     mock_app do
       provides :xml
 
@@ -903,6 +922,39 @@ class TestRouting < Test::Unit::TestCase
 
     get '/bar', {}, { 'HTTP_ACCEPT' => 'application/xml' }
     assert_equal 'Bar in html', body
+  end
+
+  should "does not allow global provides in controller" do
+    mock_app do
+      controller :base do
+        provides :xml
+
+        get(:foo, "/foo"){ "Foo in #{content_type}" }
+        get(:bar, "/bar"){ "Bar in #{content_type}" }
+      end
+    end
+
+    get '/foo', {}, { 'HTTP_ACCEPT' => 'application/xml' }
+    assert_equal 'Foo in xml', body
+    get '/foo'
+    assert_equal 'Foo in xml', body
+
+    get '/bar', {}, { 'HTTP_ACCEPT' => 'application/xml' }
+    assert_equal 'Bar in html', body
+  end
+
+  should "map non named routes in controllers" do
+    mock_app do
+      controller :base do
+        get("/foo") { "ok" }
+        get("/bar") { "ok" }
+      end
+    end
+
+    get "/base/foo"
+    assert ok?
+    get "/base/bar"
+    assert ok?
   end
 
   should "set content_type to :html for both empty Accept as well as Accept text/html" do
@@ -1445,6 +1497,29 @@ class TestRouting < Test::Unit::TestCase
     assert_equal 'okay', body
   end
 
+  should 'return value from params' do
+    mock_app do
+      get("/foo/:bar"){ raise "'bar' should be a string" unless params[:bar].kind_of? String}
+    end
+    assert_nothing_raised do
+      get "/foo/50"
+    end
+  end
+
+  should 'have MethodOverride middleware with more options' do
+    mock_app do
+      put('/', :with => :id, :provides => [:json]) { params[:id] }
+    end
+    post '/hi', {'_method'=>'PUT'}
+    assert_equal 200, status
+    assert_equal 'hi', body
+    post '/hi.json', {'_method'=>'PUT'}
+    assert_equal 200, status
+    assert_equal 'hi', body
+    post '/hi.json'
+    assert_equal 405, status
+  end
+
   should 'parse nested params' do
     mock_app do
       get(:index) { "%s %s" % [params[:account][:name], params[:account][:surname]] }
@@ -1459,7 +1534,7 @@ class TestRouting < Test::Unit::TestCase
     mock_app { set :environment, :development }
     get "/"
     assert_equal 404, status
-    assert_match /Sinatra doesn&rsquo;t know this ditty./, body
+    assert_match %r{(Sinatra doesn&rsquo;t know this ditty.|<h1>Not Found</h1>)}, body
   end
 
   should 'render a custom NotFound page' do
@@ -1508,6 +1583,18 @@ class TestRouting < Test::Unit::TestCase
     end
     get @app.url(:foo, :bar, :page => 10)
     assert_equal "/paginate/10", body
+  end
+
+  should 'accept :map and :parent' do
+    mock_app do
+      controller :posts do
+        get :show, :parent => :users, :map => "posts/:id" do
+          "#{params[:user_id]}-#{params[:id]}"
+        end
+      end
+    end
+    get '/users/123/posts/321'
+    assert_equal "123-321", body
   end
 
   should 'change params in current_path' do

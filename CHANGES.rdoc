@@ -2,6 +2,10 @@
 
 == 0.10.2 (Not Yet Released)
 
+* Added support for TravisCI with build configurations
+* Fixes issue with reloader and libxml2 [Thanks farcaller]
+* Fixes cache tests so they don't fail on CI
+
 == 0.10.1
 
 * Added a Mongo store for padrino-cache [Thanks to aliem]
