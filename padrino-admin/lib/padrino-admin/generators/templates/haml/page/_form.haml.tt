@@ -2,7 +2,11 @@
 .group
   =f.label :<%= column[:name] %>
   =f.error_message_on :<%= column[:name] %>
-  <% if column[:field_type] == :text_area %>~<% else %>=<% end %>f.<%= column[:field_type] %> :<%= column[:name] %>, :class => :<%= column[:field_type] %>
+  <% if column[:name].index('_file') %>
+    <% if column[:field_type] == :text_area %>~<% else %>=<% end %>f.<%= column[:field_type] %> :<%= column[:name] %>, :class => :<%= column[:field_type] %>    
+  <% else %>
+    <% if column[:field_type] == :text_area %>~<% else %>=<% end %>f.<%= column[:field_type] %> :<%= column[:name] %>, :class => :<%= column[:field_type] %>
+  <% end %>
   %span.description Ex: a simple text
 
 <%- end -%>
