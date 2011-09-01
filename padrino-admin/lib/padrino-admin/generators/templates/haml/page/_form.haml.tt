@@ -2,11 +2,31 @@
 .group
   =f.label :<%= column[:name] %>
   =f.error_message_on :<%= column[:name] %>
-  <% if column[:name].index('_file') %>
-    <% if column[:field_type] == :text_area %>~<% else %>=<% end %>f.<%= column[:field_type] %> :<%= column[:name] %>, :class => :<%= column[:field_type] %>    
-  <% else %>
-    <% if column[:field_type] == :text_area %>~<% else %>=<% end %>f.<%= column[:field_type] %> :<%= column[:name] %>, :class => :<%= column[:field_type] %>
-  <% end %>
+  <%- if column[:name].to_s.index('_file') -%>
+  -if @<%=  @orm.name_singular.to_s + '.' + column[:name] %>.class == Uploader and not @<%=  @orm.name_singular.to_s + '.' + column[:name] %>.url.nil?
+    -if @<%= @orm.name_singular %>.<%= column[:name] %>.versions.include? :admin_thumb
+      %img.preview.admin_thumb{:width=>80,:src=>@<%= @orm.name_singular %>.<%= column[:name] %>.admin_thumb.url}
+      =f.check_box :remove_<%= column[:name] %>
+      %span= "Remove image?"
+      =f.file_field :<%= column[:name] %>, :class => :upload
+    -else
+      %img.preview.admin_thumb{:width=>80,:src=>@<%= @orm.name_singular %>.<%= column[:name] %>.url}
+      =f.check_box :remove_<%= column[:name] %>
+      %span= "Remove image?"
+      =f.file_field :<%= column[:name] %>, :class => :upload
+  -else
+    =f.file_field :<%= column[:name] %>, :class => :upload<%= column[:required] ? ', :class=>"required"' : '' %>
+  <%- elsif column[:name].to_s.index('_mce') -%>
+  :javascript
+    window.onload = function() {
+    var oFCKeditor = new FCKeditor('<%= @orm.name_singular %>_<%= column[:name] %>');
+    oFCKeditor.BasePath = "/admin/javascripts/fckeditor/";
+    oFCKeditor.ReplaceTextarea();
+    }
+  ~f.text_area :<%= column[:name] %>, :class => [:text_area,:mce<%= column[:required] ? ',:required' : '' %>]
+  <%- else -%>
+  <% if column[:field_type] == :text_area %>~<% else %>=<% end %>f.<%= column[:field_type] %> :<%= column[:name] %>, :class => :<%= column[:field_type] %><%= column[:required] ? ', :class=>"required"' : '' %>
+  <%- end -%>
   %span.description Ex: a simple text
 
 <%- end -%>

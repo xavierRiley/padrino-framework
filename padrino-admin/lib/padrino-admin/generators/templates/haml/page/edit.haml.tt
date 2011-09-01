@@ -9,7 +9,11 @@
       =pat(:edit)
       =mt(:<%= @orm.name_singular %>)
     .inner
-      -form_for :<%= @orm.name_singular %>, url(:<%= @orm.name_plural %>, :update, :id => @<%= @orm.name_singular %>.id), :method => :put, :class => :form do |f|
+      :javascript
+        $('document').ready(function() {
+          $('#<%= @orm.name_singular %>').validate();
+        });
+      -form_for :<%= @orm.name_singular %>, url(:<%= @orm.name_plural %>, :update, :id => @<%= @orm.name_singular %>.id), :method => :put, :multipart => true, :id => :<%= @orm.name_singular %>, :class => :form do |f|
         =partial "<%= @orm.name_plural %>/form", :locals => { :f => f }
 
 -content_for :sidebar, partial("base/sidebar")

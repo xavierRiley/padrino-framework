@@ -8,7 +8,11 @@
       =pat(:new)
       =mt(:<%= @orm.name_singular %>)
     .inner
-      -form_for :<%= @orm.name_singular %>, url(:<%= @orm.name_plural %>, :create), :class => :form do |f|
+      :javascript
+        $('document').ready(function() {
+          $('#<%= @orm.name_singular %>').validate();
+        });
+      -form_for :<%= @orm.name_singular %>, url(:<%= @orm.name_plural %>, :create), :multipart => true, :class => :form do |f|
         =partial "<%= @orm.name_plural %>/form", :locals => { :f => f }
 
 -content_for :sidebar, partial("base/sidebar")

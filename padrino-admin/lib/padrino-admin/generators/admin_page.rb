@@ -35,10 +35,43 @@ module Padrino
             empty_directory destination_root("/admin/views/#{@orm.name_plural}")
 
             template "templates/page/controller.rb.tt",       destination_root("/admin/controllers/#{@orm.name_plural}.rb")
-            template "templates/#{ext}/page/_form.#{ext}.tt", destination_root("/admin/views/#{@orm.name_plural}/_form.#{ext}")
+            #Ask about validations for everything except accounts
+            if @orm.name_plural != 'accounts' and ask("Do you want to add validations now for #{@orm.name_plural} (y|n)", :no, :red) == 'y'
+              @orm.column_fields.each do |model_field| 
+                if ask("Is #{model_field[:name].to_s} required? (y|n)", :no, :red) == 'y'
+                  model_field[:required] = true
+                end
+              end
+              template "templates/#{ext}/page/_form.#{ext}.tt", destination_root("/admin/views/#{@orm.name_plural}/_form.#{ext}")
+            else
+              template "templates/#{ext}/page/_form.#{ext}.tt", destination_root("/admin/views/#{@orm.name_plural}/_form.#{ext}")
+            end
             template "templates/#{ext}/page/edit.#{ext}.tt",  destination_root("/admin/views/#{@orm.name_plural}/edit.#{ext}")
-            template "templates/#{ext}/page/index.#{ext}.tt", destination_root("/admin/views/#{@orm.name_plural}/index.#{ext}")
             template "templates/#{ext}/page/new.#{ext}.tt",   destination_root("/admin/views/#{@orm.name_plural}/new.#{ext}")
+
+            ## Carrierwave support
+            # based on naming convention of '_file' add in carrierwave support
+            @orm.column_fields.each do |model_field| 
+              if model_field[:name].to_s.index('_file')
+                empty_directory("public/images/uploads")
+                empty_directory("public/uploads")
+                inject_into_file destination_root("models/#{@orm.name_singular}.rb"),"   mount_uploader :#{model_field[:name]}, Uploader\n", :before => 'end'
+              end
+            end
+
+            #Leave the index page till and remove columns based on questions
+            #Ask about which fields to display for everything except accounts
+            if @orm.name_plural != 'accounts' and ask("Do you want to specify which columns to display for the #{@orm.name_plural} index page? (y|n)", :display_all, :red) == 'y'
+              @ignoreFields = []
+              @orm.columns.each do |model_field|
+                if ask("Display #{model_field.name.to_s}? (y|n)", :no, :red) != 'y'
+                  @ignoreFields << model_field.name
+                end
+              end
+              template "templates/#{ext}/page/index.#{ext}.tt", destination_root("/admin/views/#{@orm.name_plural}/index.#{ext}")
+            else
+              template "templates/#{ext}/page/index.#{ext}.tt", destination_root("/admin/views/#{@orm.name_plural}/index.#{ext}")
+            end
 
             options[:destroy] ? remove_project_module(@orm.name_plural) : add_project_module(@orm.name_plural)
           end
