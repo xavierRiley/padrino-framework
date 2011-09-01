@@ -4,7 +4,7 @@
     %meta{:content => "text/html; charset=utf-8", "http-equiv" => "Content-Type"}
     %title Padrino Admin
     =stylesheet_link_tag :base, "themes/<%= options[:theme] %>/style"
-    =javascript_include_tag "fckeditor/fckeditor.js", "//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js", "//ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/jquery.validate.min.js", "//ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/additional-methods.min.js"
+    =javascript_include_tag "fckeditor/fckeditor.js", "//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js", "//ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/jquery.validate.min.js", "//ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/additional-methods.min.js", "jqDateSelectBoxes_3/dateSelectBoxes.pack.js"
   %body
     #container
       #header
