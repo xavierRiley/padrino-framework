@@ -1,4 +1,5 @@
 require 'padrino-core/cli/base' unless defined?(Padrino::Cli::Base)
+require 'net/http'
 require 'net/https'
 
 module Padrino
