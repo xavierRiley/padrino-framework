@@ -20,7 +20,7 @@
           %tr
             <%- @orm.columns.each_with_index do |column, i| -%>
             <%- unless @ignoreFields.nil? == false and @ignoreFields.include? column.name -%>
-            <%- if column.name.to_s.include?('_file') -%>
+            <%- if column.name.to_s.include?('_file') or column.name.to_s.include?('_img') -%>
             -if <%=  @orm.name_singular.to_s + '.' + column.name %>.class == Uploader and not <%=  @orm.name_singular.to_s + '.' + column.name %>.url.nil?
               %td<%= ".first" if i==0 %>
                 -if <%= @orm.name_singular %>.<%= column.name %>.versions.include? :admin_thumb
