@@ -15,7 +15,7 @@
       %span= "Remove image?"
       =f.file_field :<%= column[:name] %>, :class => :upload
   -else
-    =f.file_field :<%= column[:name] %>, :class => :upload<%= column[:required] ? ', :class=>"required"' : '' %>
+    =f.file_field :<%= column[:name] %>, :class => :upload <%= column[:required] ? ', :class=>"required"' : '' %>
   <%- elsif column[:name].to_s.index('_mce') -%>
   :javascript
     window.onload = function() {
@@ -23,20 +23,20 @@
     oFCKeditor.BasePath = "/admin/javascripts/fckeditor/";
     oFCKeditor.ReplaceTextarea();
     }
-  ~f.text_area :<%= column[:name] %>, :class => [:text_area,:mce<%= column[:required] ? ',:required' : '' %>]
+  ~f.text_area :<%= column[:name] %>, :class => ['text_area', 'mce'<%= column[:required] ? ", 'required'" : '' %>]
   <%- elsif column[:name].to_s.index('_date') or column[:field_type] == :datetime -%>
   :javascript
     $('document').ready(function() {
       $().dateSelectBoxes($('#<%= column[:name] %>_year'),$('#<%= column[:name] %>_month'),$('#<%= column[:name] %>_day'),true);
       $('.date_selector select').change(function() {
-        $('input.<%= column[:name] %>').text($('#<%= column[:name] %>_year').val() + '-' + $('#<%= column[:name] %>_month').val() + '-' + $('#<%= column[:name] %>_day'));
+        $('input.<%= column[:name] %>').val($('#<%= column[:name] %>_year').val() + '-' + $('#<%= column[:name] %>_month').val() + '-' + $('#<%= column[:name] %>_day').val());
       });
     });
   %div.date_selector
-    =f.select "<%= @orm.name_singular %>[<%= column[:name] %>][year]", :id=>"<%= column[:name] %>_year", :options => (1900..Time.now.year)
-    =f.select "<%= @orm.name_singular %>[<%= column[:name] %>][month]", :id=>"<%= column[:name] %>_month", :options => (1..12)
-    =f.select "<%= @orm.name_singular %>[<%= column[:name] %>][day]", :id=>"<%= column[:name] %>_day", :options => (1..31)
-    =f.hidden_field :<%= column[:name] %>, :class => [:<%= column[:name] %>,:date<%= column[:required] ? ',:required' : '' %>] 
+    =f.select :"<%= column[:name] %>_year", :id=>"<%= column[:name] %>_year", :options => (Time.now.year..1900).to_a.reverse!, :selected => (@<%= @orm.name_singular %>.<%= column[:name] %> ? @<%= @orm.name_singular %>.<%= column[:name] %>.year : Time.now.year)
+    =f.select :"<%= column[:name] %>_month", :id=>"<%= column[:name] %>_month", :options => (1..12), :selected => (@<%= @orm.name_singular %>.<%= column[:name] %> ? @<%= @orm.name_singular %>.<%= column[:name] %>.month : Time.now.month)
+    =f.select :"<%= column[:name] %>_day", :id=>"<%= column[:name] %>_day", :options => (1..31), :selected => (@<%= @orm.name_singular %>.<%= column[:name] %> ? @<%= @orm.name_singular %>.<%= column[:name] %>.day : Time.now.day)
+    =f.hidden_field :<%= column[:name] %>, :class => ['<%= column[:name] %>', 'date'<%= column[:required] ? ", 'required'" : '' %>].join(" ") 
   <%- else -%>
   <% if column[:field_type] == :text_area %>~<% else %>=<% end %>f.<%= column[:field_type] %> :<%= column[:name] %>, :class => :<%= column[:field_type] %><%= column[:required] ? ', :class=>"required"' : '' %>
   <%- end -%>
