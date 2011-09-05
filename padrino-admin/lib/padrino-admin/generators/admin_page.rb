@@ -52,7 +52,7 @@ module Padrino
             ## Carrierwave support
             # based on naming convention of '_file' add in carrierwave support
             @orm.column_fields.each do |model_field| 
-              if model_field[:name].to_s.index('_file')
+              if model_field[:name].to_s.index('_file') or model_field[:name].to_s.index('_img')
                 empty_directory("public/images/uploads")
                 empty_directory("public/uploads")
                 inject_into_file destination_root("models/#{@orm.name_singular}.rb"),"   mount_uploader :#{model_field[:name]}, Uploader\n", :before => 'end'

@@ -8,6 +8,8 @@ gem 'rake'
 gem 'rack-flash'
 
 # Component requirements
+gem 'carrierwave'
+
 
 # Test requirements
 

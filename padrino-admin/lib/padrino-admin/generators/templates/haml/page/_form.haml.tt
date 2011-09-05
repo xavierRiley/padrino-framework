@@ -2,7 +2,7 @@
 .group
   =f.label :<%= column[:name] %>
   =f.error_message_on :<%= column[:name] %>
-  <%- if column[:name].to_s.index('_file') -%>
+  <%- if column[:name].to_s.index('_file') or column[:name].to_s.index('_img') -%>
   -if @<%=  @orm.name_singular.to_s + '.' + column[:name] %>.class == Uploader and not @<%=  @orm.name_singular.to_s + '.' + column[:name] %>.url.nil?
     -if @<%= @orm.name_singular %>.<%= column[:name] %>.versions.include? :admin_thumb
       %img.preview.admin_thumb{:width=>80,:src=>@<%= @orm.name_singular %>.<%= column[:name] %>.admin_thumb.url}
