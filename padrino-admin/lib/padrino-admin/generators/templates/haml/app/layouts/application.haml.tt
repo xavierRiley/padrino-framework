@@ -4,7 +4,35 @@
     %meta{:content => "text/html; charset=utf-8", "http-equiv" => "Content-Type"}
     %title Padrino Admin
     =stylesheet_link_tag :base, "themes/<%= options[:theme] %>/style"
-    =javascript_include_tag "fckeditor/fckeditor.js", "//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js", "//ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/jquery.validate.min.js", "//ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/additional-methods.min.js", "jqDateSelectBoxes_3/dateSelectBoxes.pack.js"
+    =javascript_include_tag "fckeditor/fckeditor.js", "//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js", "//ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js", "//ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/jquery.validate.min.js", "//ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/additional-methods.min.js", "jqDateSelectBoxes_3/dateSelectBoxes.pack.js"
+    :javascript
+        $('document').ready(function() {
+            $('form.edit fieldset, form.create fieldset').sortable({
+                axis:'y',
+                forceHelperSize:true,
+                forcePlaceholderSize:true,
+                connectWith: 'fieldset',
+                placeholder: 'drop_target',
+                stop: function(e,ui){
+                    var current = ui.item.closest('fieldset').children('.group:first');
+                    var pipeline = current.next();
+                    $.ajax({
+                        type: 'PUT',
+                        url: '/tasks/' + ui.item.attr('id').replace(strip,'') + '.json',
+                        data: {
+                            'task[action]': 'move',
+                            'task[user_id]': ui.item.closest('fieldset').attr('id').replace(strip,''),
+                            'tasks[current]': current.children().map(function(){
+                                return this.id.replace(strip,'');
+                            }).get().join(),
+                            'tasks[pipeline]': pipeline.children().map(function(){
+                                return this.id.replace(strip,'');
+                            }).get().join()
+                        }
+                    });
+                }
+            });
+        });
   %body
     #container
       #header

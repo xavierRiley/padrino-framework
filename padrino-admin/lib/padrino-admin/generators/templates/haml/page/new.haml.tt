@@ -12,7 +12,7 @@
         $('document').ready(function() {
           $('#<%= @orm.name_singular %>').validate();
         });
-      -form_for :<%= @orm.name_singular %>, url(:<%= @orm.name_plural %>, :create), :id => @<%= @orm.name_singular %>.id, :id => :<%= @orm.name_singular %>, :multipart => true, :class => :form do |f|
+      -form_for :<%= @orm.name_singular %>, url(:<%= @orm.name_plural %>, :create), :id => @<%= @orm.name_singular %>.id, :id => :<%= @orm.name_singular %>, :multipart => true, :class => 'form create' do |f|
         =partial "<%= @orm.name_plural %>/form", :locals => { :f => f }
 
 -content_for :sidebar, partial("base/sidebar")

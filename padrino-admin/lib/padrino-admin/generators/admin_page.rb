@@ -31,6 +31,7 @@ module Padrino
         if in_app_root?
           models.each do |model|
             @orm = default_orm || Padrino::Admin::Generators::Orm.new(model, adapter)
+            
             self.behavior = :revoke if options[:destroy]
             empty_directory destination_root("/admin/views/#{@orm.name_plural}")
 
@@ -55,6 +56,7 @@ module Padrino
               if model_field[:name].to_s.index('_file') or model_field[:name].to_s.index('_img')
                 empty_directory("public/images/uploads")
                 empty_directory("public/uploads")
+                prepend_file destination_root("models/#{@orm.name_singular}.rb"), "require 'carrierwave/orm/#{fetch_component_choice(:orm)}'\n"
                 inject_into_file destination_root("models/#{@orm.name_singular}.rb"),"   mount_uploader :#{model_field[:name]}, Uploader\n", :before => 'end'
               end
             end

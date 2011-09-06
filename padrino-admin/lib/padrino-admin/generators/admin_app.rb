@@ -79,6 +79,14 @@ module Padrino
           admin_app = Padrino::Generators::AdminPage.new(["account"], :root => options[:root], :destroy => options[:destroy])
           admin_app.default_orm = Padrino::Admin::Generators::Orm.new(:account, orm, columns, column_fields)
           admin_app.invoke_all
+          
+          admin_config_params = [
+            "AdminConfiguration", "model_name:string", "fieldset:string", "contains:text", "hide:boolean", "label:string", "validation:string",
+            "-a=#{options[:app]}",
+            "-r=#{options[:root]}"
+          ]
+          
+          Padrino::Generators::Model.start(admin_config_params)
 
           template "templates/account/#{orm}.rb.tt", destination_root(options[:app], "models", "account.rb"), :force => true
 
@@ -87,6 +95,9 @@ module Padrino
           else
             template "templates/account/seeds.rb.tt", destination_root("db/seeds.rb")
           end
+          
+          #Populate admin config with model info
+          template "templates/account/admin_config.rb.tt", destination_root("db/admin_config.rb")
 
           empty_directory destination_root("admin/controllers")
           empty_directory destination_root("admin/views")
