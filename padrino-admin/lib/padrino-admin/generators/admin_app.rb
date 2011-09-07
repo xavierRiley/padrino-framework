@@ -87,6 +87,7 @@ module Padrino
           ]
           
           Padrino::Generators::Model.start(admin_config_params)
+          inject_into_class destination_root('models/admin_configuration.rb'), "AdminConfiguration","    serialize :contains\n    serialize :validation\n"
 
           template "templates/account/#{orm}.rb.tt", destination_root(options[:app], "models", "account.rb"), :force => true
 
