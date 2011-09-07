@@ -97,6 +97,7 @@ module Padrino
           end
           
           #Populate admin config with model info
+          template "templates/account/admin_config_controller.rb.tt", destination_root("admin/controllers/admin_configuration.rb")
           template "templates/account/admin_config.rb.tt", destination_root("db/admin_config.rb")
 
           empty_directory destination_root("admin/controllers")

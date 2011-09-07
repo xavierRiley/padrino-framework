@@ -6,12 +6,12 @@ shell.say ""
 
 if confirmation == 'y'
   Dir["models/*.rb"].each do |file_path|
-    require file_path # Make sure that the model has been loaded.
+    require Padrino.root(file_path) # Make sure that the model has been loaded.
 
     basename  = File.basename(file_path, File.extname(file_path))
     clazz     = basename.camelize.constantize
-
-    clazz.columns.each {|col| tempconf = AdminConfig.new({:model_name => clazz, :fieldset => col.name, :contains => [col.name], :hide => false, :label => '', :validation => []}); tempconf.save! }  
+    shell.say clazz.name
+    clazz.columns.each {|col| tempconf = AdminConfiguration.new({:model_name => clazz.name, :fieldset => col.name, :contains => [col.name], :hide => false, :label => '', :validation => []}); tempconf.save! }  
 
   end
 end
