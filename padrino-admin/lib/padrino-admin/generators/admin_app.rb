@@ -107,9 +107,15 @@ module Padrino
           empty_directory destination_root("admin/views/layouts")
           empty_directory destination_root("admin/views/sessions")
 
-          template "templates/#{ext}/app/base/_sidebar.#{ext}.tt",       destination_root("admin/views/base/_sidebar.#{ext}")
-          template "templates/#{ext}/app/base/index.#{ext}.tt",          destination_root("admin/views/base/index.#{ext}")
-          template "templates/#{ext}/app/layouts/application.#{ext}.tt", destination_root("admin/views/layouts/application.#{ext}")
+          if options[:theme] == "kyan-default"
+            template "templates/#{ext}/app/base/_sidebar-kyan.#{ext}.tt",       destination_root("admin/views/base/_sidebar.#{ext}")
+            template "templates/#{ext}/app/base/index-kyan.#{ext}.tt",          destination_root("admin/views/base/index.#{ext}")
+            template "templates/#{ext}/app/layouts/application-kyan.#{ext}.tt", destination_root("admin/views/layouts/application.#{ext}")
+          else  
+            template "templates/#{ext}/app/base/_sidebar.#{ext}.tt",       destination_root("admin/views/base/_sidebar.#{ext}")
+            template "templates/#{ext}/app/base/index.#{ext}.tt",          destination_root("admin/views/base/index.#{ext}")
+            template "templates/#{ext}/app/layouts/application.#{ext}.tt", destination_root("admin/views/layouts/application.#{ext}")
+          end
           template "templates/#{ext}/app/sessions/new.#{ext}.tt",        destination_root("admin/views/sessions/new.#{ext}")
 
           add_project_module :accounts
