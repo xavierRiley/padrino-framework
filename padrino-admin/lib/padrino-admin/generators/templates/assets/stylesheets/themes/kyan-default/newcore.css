@@ -544,7 +544,7 @@ table .delete,
 	background: transparent url('/admin/newimg/button_table_delete.png') top left no-repeat;
 }
 
-.notice, .error {
+div.notice, div.error, .error {
 	-moz-box-shadow: inset 0px 0px 4px #ece8d4; /* FF3.5+ */
 	-webkit-box-shadow: inset 0px 0px 4px #ece8d4; /* Saf3.0+, Chrome */
 	box-shadow: inset 0px 0px 4px #ece8d4; /* Opera 10.5, IE 9.0 */
@@ -563,17 +563,28 @@ table .delete,
 	font-size: 15px;
 }
 
-.error {
+span.error { display: none;}
+
+label.error {
 	background: #ffece9;
 	top: 0;
 	border-bottom:1px solid white;
+	-moz-box-shadow: inset 0px 1px 2px #d3d3d3; /* FF3.5+ */
+	-webkit-box-shadow: inset 0px 1px 2px #d3d3d3; /* Saf3.0+, Chrome */
+	box-shadow: inset 0px 1px 2px #d3d3d3; /* Opera 10.5, IE 9.0 */
+
+	font-family: "Helvetica Neue", "Helvetica", Arial, sans-serif;
+	width: 636px;
+	padding: 7px;
+	font-size: 14px;
+	margin-bottom:17px;
 }
 
 /* Primary/Secondary Forms */
 
-fieldset#primary input[type="text"],
-fieldset#primary input.text,
-fieldset#primary textarea  {
+form #primary input[type="text"],
+form #primary input.text,
+form #primary textarea  {
 	-moz-box-shadow: inset 0px 1px 2px #d3d3d3; /* FF3.5+ */
 	-webkit-box-shadow: inset 0px 1px 2px #d3d3d3; /* Saf3.0+, Chrome */
 	box-shadow: inset 0px 1px 2px #d3d3d3; /* Opera 10.5, IE 9.0 */
@@ -588,9 +599,9 @@ fieldset#primary textarea  {
 	margin-bottom:17px;
 }
 
-fieldset#primary input[type="text"]:focus,
-fieldset#primary input.text:focus,
-fieldset#primary textarea:focus  {
+form #primary input[type="text"]:focus,
+form #primary input.text:focus,
+form #primary textarea:focus  {
 	outline: none;
 	border-color: #92c0df;
 	background: #ffffff;
@@ -603,12 +614,17 @@ form label {
 	font-size:16px;
 }
 
-fieldset#primary textarea#summary {
+form #primary textarea#summary {
 	height: 80px;
 }
 
-fieldset#primary textarea {
+form #primary textarea {
 	height: 160px;
+}
+
+form #primary fieldset {
+	border-bottom: 1px solid #b5b5b5;
+	padding: 20px 0px;
 }
 
 #secondary .imageregion {
